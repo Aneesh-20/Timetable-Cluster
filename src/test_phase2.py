@@ -1,0 +1,38 @@
+import sys, os
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from src.models import Assignment, TimeSlot
+from src.sample_data import get_sample_school
+from src.constraints import check_hard_constraints, score_soft_constraints
+
+teachers, rooms, sections, constraints = get_sample_school()
+
+print("=== School Data Loaded ===")
+print(f"Teachers : {len(teachers)}")
+print(f"Rooms    : {len(rooms)}")
+print(f"Sections : {len(sections)}")
+print(f"Rules    : {len(constraints)}")
+print()
+
+test_assignments = [
+    Assignment(section_id="10A", subject="Math", teacher_id="T001",
+               room_id="R101", timeslot=TimeSlot(day=0, period=1)),
+    Assignment(section_id="10B", subject="English", teacher_id="T002",
+               room_id="R102", timeslot=TimeSlot(day=0, period=1)),
+    Assignment(section_id="10A", subject="Physics", teacher_id="T001",
+               room_id="R103", timeslot=TimeSlot(day=0, period=1)),
+]
+
+print("=== Checking Hard Constraints ===")
+violations = check_hard_constraints(test_assignments, teachers, rooms)
+if violations:
+    print(f"Found {len(violations)} violation(s):")
+    for v in violations:
+        print(f"  ! {v}")
+else:
+    print("No violations — timetable is valid!")
+
+print()
+print("=== Soft Constraint Score ===")
+score = score_soft_constraints(test_assignments, teachers)
+print(f"Penalty score: {score} (0.0 = perfect)")
