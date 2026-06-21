@@ -49,12 +49,13 @@ accent  = "#4FC3F7" if D else "#1565C0"
 text    = "#FFFFFF" if D else "#111827"
 sub     = "#8892A4" if D else "#6B7280"
 border  = "rgba(79,195,247,0.15)" if D else "rgba(21,101,192,0.15)"
+border2 = "rgba(79,195,247,0.30)" if D else "rgba(21,101,192,0.30)"
 grid_c  = "rgba(255,255,255,0.04)" if D else "rgba(0,0,0,0.04)"
+row_bg  = "#0D1320" if D else "#F8FAFF"
 plot_bg = "rgba(0,0,0,0)"
 t_icon  = "☀️" if D else "🌙"
 t_lbl   = "Light" if D else "Dark"
 
-# load logo as base64
 logo_b64 = ""
 logo_path = os.path.join(os.path.dirname(__file__), "slotra_logo.png")
 if os.path.exists(logo_path):
@@ -86,19 +87,17 @@ section[data-testid="stSidebar"]{{display:none;}}
     letter-spacing:-1px;line-height:1;font-family:'Georgia',serif;
 }}
 .hero-section{{
-    text-align:center;padding:2.5rem 1rem 1rem;
+    text-align:center;padding:2rem 1rem .75rem;
     position:relative;z-index:1;
 }}
-
-
 .hero-title{{
     font-size:64px;font-weight:900;color:{accent};
-    letter-spacing:-3px;line-height:1;margin-bottom:.4rem;
+    letter-spacing:-3px;line-height:1;margin-bottom:.3rem;
     font-family:'Georgia',serif;
 }}
 .hero-sub{{
     font-size:15px;color:{sub};font-style:italic;
-    margin:0 auto 1.5rem;letter-spacing:.02em;
+    margin:0 auto 1.25rem;letter-spacing:.02em;
 }}
 .stat-row{{
     display:grid;grid-template-columns:repeat(3,1fr);
@@ -111,7 +110,7 @@ section[data-testid="stSidebar"]{{display:none;}}
 .stat-lbl{{font-size:9px;color:{sub};text-transform:uppercase;letter-spacing:.07em;margin-top:3px;}}
 .feat-grid{{
     display:grid;grid-template-columns:repeat(auto-fit,minmax(148px,1fr));
-    gap:10px;margin-bottom:1.75rem;position:relative;z-index:1;
+    gap:10px;margin-bottom:1.5rem;position:relative;z-index:1;
 }}
 .fc{{
     background:{card};border:0.5px solid {border};
@@ -127,30 +126,96 @@ section[data-testid="stSidebar"]{{display:none;}}
     text-transform:uppercase;letter-spacing:.09em;
     margin:1.25rem 0 .5rem;
 }}
+
+/* ── Premium input section ── */
+.input-card{{
+    background:{card};
+    border:0.5px solid {border};
+    border-radius:16px;
+    overflow:hidden;
+    margin-bottom:14px;
+}}
+.input-card-hd{{
+    display:flex;align-items:center;gap:10px;
+    padding:14px 18px;
+    border-bottom:0.5px solid {border};
+    background:{card2};
+}}
+.input-card-hd-icon{{
+    width:32px;height:32px;border-radius:8px;
+    background:{accent}20;
+    display:flex;align-items:center;justify-content:center;
+    font-size:16px;
+}}
+.input-card-hd-title{{
+    font-size:14px;font-weight:700;color:{text};
+}}
+.input-card-hd-sub{{
+    font-size:11px;color:{sub};margin-top:1px;
+}}
+.input-row{{
+    display:grid;padding:10px 18px;
+    border-bottom:0.5px solid {border}80;
+    background:{row_bg};
+    border-radius:0;
+    transition:background .15s;
+}}
+.input-row:hover{{background:{card};}}
+.input-row:last-child{{border-bottom:none;}}
+.row-badge{{
+    font-size:10px;font-weight:700;
+    padding:2px 8px;border-radius:999px;
+    background:{accent}20;color:{accent};
+    display:inline-block;margin-bottom:6px;
+    letter-spacing:.05em;
+}}
+.field-label{{
+    font-size:10px;font-weight:600;color:{sub};
+    text-transform:uppercase;letter-spacing:.07em;
+    margin-bottom:3px;
+}}
+.hint-tag{{
+    font-size:10px;color:{accent};
+    background:{accent}15;
+    padding:2px 8px;border-radius:999px;
+    display:inline-block;margin-left:6px;
+}}
+.add-row-btn{{
+    display:flex;align-items:center;gap:7px;
+    padding:10px 18px;
+    font-size:12px;font-weight:600;color:{accent};
+    background:transparent;border:none;
+    cursor:crosshair;transition:background .15s;
+    width:100%;
+}}
+.add-row-btn:hover{{background:{accent}10;}}
+
+/* ── Dashboard metric cards ── */
 .mc{{
     background:{card2};border:0.5px solid {border};
     border-radius:12px;padding:1.1rem;text-align:center;margin:3px;
 }}
 .mv{{font-size:34px;font-weight:800;color:{accent};line-height:1;}}
 .ml{{font-size:10px;color:{sub};text-transform:uppercase;letter-spacing:.06em;margin-top:3px;}}
-div[data-testid="stExpander"]{{
-    background:{card}!important;
-    border:0.5px solid {border}!important;
-    border-radius:12px!important;
-}}
+
+/* ── Generate button ── */
 div[data-testid="stButton"]>button[kind="primary"]{{
     background:linear-gradient(135deg,{accent} 0%,#1565C0 100%)!important;
     color:#FFFFFF!important;border:none!important;border-radius:10px!important;
     font-size:15px!important;font-weight:700!important;
     padding:.65rem 2rem!important;letter-spacing:.03em!important;
     box-shadow:0 4px 18px {accent}50!important;
-    transition:opacity .2s,transform .15s!important;
 }}
 div[data-testid="stButton"]>button[kind="primary"]:hover{{
     opacity:.88!important;transform:translateY(-1px)!important;
 }}
+div[data-testid="stExpander"]{{
+    background:{card}!important;
+    border:0.5px solid {border}!important;
+    border-radius:12px!important;
+}}
 
-/* ── SPLASH SCREEN ── */
+/* ── Splash ── */
 #splash{{
     position:fixed;inset:0;z-index:99999;
     background:#0A0E1A;
@@ -196,21 +261,21 @@ div[data-testid="stButton"]>button[kind="primary"]:hover{{
 <div class="grid-bg"></div>
 """, unsafe_allow_html=True)
 
-# ── SPLASH SCREEN ────────────────────────────────────────
+# ── SPLASH ───────────────────────────────────────────────
 if st.session_state.page == "splash":
     if logo_b64:
         st.markdown(f"""
         <div id="splash">
           <img class="splash-logo"
-               src="data:image/png;base64,{logo_b64}" alt="Slotra logo"/>
+               src="data:image/png;base64,{logo_b64}" alt="Slotra"/>
           <div class="splash-name">Slotra</div>
           <div class="splash-bar"></div>
         </div>
         <script>
           setTimeout(function(){{
-            const splash = document.getElementById('splash');
-            if(splash) splash.style.display='none';
-          }}, 2300);
+            const s=document.getElementById('splash');
+            if(s)s.style.display='none';
+          }},2300);
         </script>
         """, unsafe_allow_html=True)
     st.session_state.page = "home"
@@ -220,8 +285,7 @@ if st.session_state.page == "splash":
 # ── TOP BAR ──────────────────────────────────────────────
 tl, tr = st.columns([5, 1])
 with tl:
-    logo_html = (f'<img class="logo-img" '
-                 f'src="data:image/png;base64,{logo_b64}" alt="Slotra"/>'
+    logo_html = (f'<img class="logo-img" src="data:image/png;base64,{logo_b64}" alt="Slotra"/>'
                  if logo_b64 else '<div style="font-size:32px;">🗓️</div>')
     st.markdown(f"""
     <div class="topbar">
@@ -251,7 +315,6 @@ if st.session_state.page == "home":
 
     st.markdown(f"""
     <div class="hero-section">
-
       <div class="hero-title">Slotra</div>
       <div class="hero-sub">Smart Timetables Through Clustering</div>
     </div>
@@ -294,108 +357,212 @@ if st.session_state.page == "home":
     st.markdown(f"<div class='sec-lbl'>Configure your school</div>",
                 unsafe_allow_html=True)
 
-    with st.expander("👨‍🏫 Teachers", expanded=True):
-        st.caption("Name · Subjects (comma separated) · "
-                   "Unavailable: day,period e.g. 0,1")
-        for i, row in enumerate(st.session_state.teacher_rows):
-            c1,c2,c3,c4 = st.columns([2,2,2,.4])
+    # ── TEACHERS ─────────────────────────────────────────
+    st.markdown(f"""
+    <div class="input-card">
+      <div class="input-card-hd">
+        <div class="input-card-hd-icon">👨‍🏫</div>
+        <div>
+          <div class="input-card-hd-title">Teachers</div>
+          <div class="input-card-hd-sub">
+            Name · Subjects they teach · Unavailable slots
+          </div>
+        </div>
+      </div>
+    </div>""", unsafe_allow_html=True)
+
+    for i, row in enumerate(st.session_state.teacher_rows):
+        with st.container():
+            st.markdown(f"""
+            <div style='background:{row_bg};border:0.5px solid {border}80;
+                 border-radius:10px;padding:10px 14px 4px;margin-bottom:8px;'>
+              <span class='row-badge'>Teacher {i+1}</span>
+            </div>""", unsafe_allow_html=True)
+            c1, c2, c3, c4 = st.columns([2, 2, 2, 0.35])
             with c1:
+                st.markdown(f"<div class='field-label'>Full name</div>",
+                            unsafe_allow_html=True)
                 st.session_state.teacher_rows[i]["name"] = st.text_input(
-                    "Name", value=row["name"], key=f"tn{i}")
+                    "", value=row["name"], key=f"tn{i}",
+                    placeholder="e.g. Mr. Kumar",
+                    label_visibility="collapsed")
             with c2:
+                st.markdown(f"<div class='field-label'>Subjects taught"
+                            f"<span class='hint-tag'>comma separated</span></div>",
+                            unsafe_allow_html=True)
                 st.session_state.teacher_rows[i]["subjects"] = st.text_input(
-                    "Subjects", value=row["subjects"], key=f"ts{i}")
+                    "", value=row["subjects"], key=f"ts{i}",
+                    placeholder="e.g. Math,Physics",
+                    label_visibility="collapsed")
             with c3:
+                st.markdown(f"<div class='field-label'>Unavailable"
+                            f"<span class='hint-tag'>Day,Period e.g. 0,1</span></div>",
+                            unsafe_allow_html=True)
                 st.session_state.teacher_rows[i]["unavailable"] = st.text_input(
-                    "Unavailable", value=row["unavailable"], key=f"tu{i}")
+                    "", value=row["unavailable"], key=f"tu{i}",
+                    placeholder="e.g. 0,1 (Mon P1) or leave blank",
+                    label_visibility="collapsed")
             with c4:
-                st.markdown("<br>", unsafe_allow_html=True)
-                if st.button("✕", key=f"td{i}"):
+                st.markdown("<br><br>", unsafe_allow_html=True)
+                if st.button("✕", key=f"td{i}", help="Remove teacher"):
                     st.session_state.teacher_rows.pop(i)
                     st.rerun()
-        if st.button("＋ Add teacher"):
-            st.session_state.teacher_rows.append(
-                {"name":"","subjects":"","unavailable":""})
-            st.rerun()
 
-    with st.expander("🏠 Rooms", expanded=True):
-        st.caption("Room ID · Name · Capacity")
-        for i, row in enumerate(st.session_state.room_rows):
-            c1,c2,c3,c4 = st.columns([1.5,2,1,.4])
-            with c1:
-                st.session_state.room_rows[i]["id"] = st.text_input(
-                    "Room ID", value=row["id"], key=f"ri{i}")
-            with c2:
-                st.session_state.room_rows[i]["name"] = st.text_input(
-                    "Name", value=row["name"], key=f"rn{i}")
-            with c3:
-                st.session_state.room_rows[i]["capacity"] = st.number_input(
-                    "Capacity", value=row["capacity"],
-                    min_value=1, key=f"rc{i}")
-            with c4:
-                st.markdown("<br>", unsafe_allow_html=True)
-                if st.button("✕", key=f"rd{i}"):
-                    st.session_state.room_rows.pop(i)
-                    st.rerun()
-        if st.button("＋ Add room"):
-            st.session_state.room_rows.append(
-                {"id":"","name":"","capacity":30})
-            st.rerun()
-
-    with st.expander("📚 Sections (Classes)", expanded=True):
-        st.caption("ID · Name · Students · Subjects:periods — e.g. Math:5,English:4")
-        for i, row in enumerate(st.session_state.section_rows):
-            c1,c2,c3,c4,c5 = st.columns([1,1.5,.8,2.5,.4])
-            with c1:
-                st.session_state.section_rows[i]["id"] = st.text_input(
-                    "ID", value=row["id"], key=f"si{i}")
-            with c2:
-                st.session_state.section_rows[i]["name"] = st.text_input(
-                    "Name", value=row["name"], key=f"sn{i}")
-            with c3:
-                st.session_state.section_rows[i]["strength"] = st.number_input(
-                    "Students", value=row["strength"],
-                    min_value=1, key=f"ss{i}")
-            with c4:
-                st.session_state.section_rows[i]["subjects"] = st.text_input(
-                    "Subjects:periods", value=row["subjects"], key=f"sb{i}")
-            with c5:
-                st.markdown("<br>", unsafe_allow_html=True)
-                if st.button("✕", key=f"sd{i}"):
-                    st.session_state.section_rows.pop(i)
-                    st.rerun()
-        if st.button("＋ Add section"):
-            st.session_state.section_rows.append(
-                {"id":"","name":"","strength":30,"subjects":""})
-            st.rerun()
+    if st.button("＋  Add teacher", key="add_teacher"):
+        st.session_state.teacher_rows.append(
+            {"name":"","subjects":"","unavailable":""})
+        st.rerun()
 
     st.markdown("<br>", unsafe_allow_html=True)
-    c1,c2,c3 = st.columns([1.2,2,1.2])
+
+    # ── ROOMS ────────────────────────────────────────────
+    st.markdown(f"""
+    <div class="input-card">
+      <div class="input-card-hd">
+        <div class="input-card-hd-icon">🏠</div>
+        <div>
+          <div class="input-card-hd-title">Rooms</div>
+          <div class="input-card-hd-sub">
+            Room ID · Display name · Student capacity
+          </div>
+        </div>
+      </div>
+    </div>""", unsafe_allow_html=True)
+
+    for i, row in enumerate(st.session_state.room_rows):
+        with st.container():
+            st.markdown(f"""
+            <div style='background:{row_bg};border:0.5px solid {border}80;
+                 border-radius:10px;padding:10px 14px 4px;margin-bottom:8px;'>
+              <span class='row-badge'>Room {i+1}</span>
+            </div>""", unsafe_allow_html=True)
+            c1, c2, c3, c4 = st.columns([1.5, 2.5, 1.2, 0.35])
+            with c1:
+                st.markdown(f"<div class='field-label'>Room ID</div>",
+                            unsafe_allow_html=True)
+                st.session_state.room_rows[i]["id"] = st.text_input(
+                    "", value=row["id"], key=f"ri{i}",
+                    placeholder="e.g. R101",
+                    label_visibility="collapsed")
+            with c2:
+                st.markdown(f"<div class='field-label'>Room name</div>",
+                            unsafe_allow_html=True)
+                st.session_state.room_rows[i]["name"] = st.text_input(
+                    "", value=row["name"], key=f"rn{i}",
+                    placeholder="e.g. Room 101",
+                    label_visibility="collapsed")
+            with c3:
+                st.markdown(f"<div class='field-label'>Capacity"
+                            f"<span class='hint-tag'>max students</span></div>",
+                            unsafe_allow_html=True)
+                st.session_state.room_rows[i]["capacity"] = st.number_input(
+                    "", value=row["capacity"], min_value=1,
+                    key=f"rc{i}", label_visibility="collapsed")
+            with c4:
+                st.markdown("<br><br>", unsafe_allow_html=True)
+                if st.button("✕", key=f"rd{i}", help="Remove room"):
+                    st.session_state.room_rows.pop(i)
+                    st.rerun()
+
+    if st.button("＋  Add room", key="add_room"):
+        st.session_state.room_rows.append(
+            {"id":"","name":"","capacity":30})
+        st.rerun()
+
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    # ── SECTIONS ─────────────────────────────────────────
+    st.markdown(f"""
+    <div class="input-card">
+      <div class="input-card-hd">
+        <div class="input-card-hd-icon">📚</div>
+        <div>
+          <div class="input-card-hd-title">Sections (Classes)</div>
+          <div class="input-card-hd-sub">
+            Section ID · Name · Students · Subjects with periods per week
+          </div>
+        </div>
+      </div>
+    </div>""", unsafe_allow_html=True)
+
+    for i, row in enumerate(st.session_state.section_rows):
+        with st.container():
+            st.markdown(f"""
+            <div style='background:{row_bg};border:0.5px solid {border}80;
+                 border-radius:10px;padding:10px 14px 4px;margin-bottom:8px;'>
+              <span class='row-badge'>Section {i+1}</span>
+            </div>""", unsafe_allow_html=True)
+            c1, c2, c3, c4, c5 = st.columns([1, 1.5, 0.8, 3, 0.35])
+            with c1:
+                st.markdown(f"<div class='field-label'>Section ID</div>",
+                            unsafe_allow_html=True)
+                st.session_state.section_rows[i]["id"] = st.text_input(
+                    "", value=row["id"], key=f"si{i}",
+                    placeholder="e.g. 10A",
+                    label_visibility="collapsed")
+            with c2:
+                st.markdown(f"<div class='field-label'>Section name</div>",
+                            unsafe_allow_html=True)
+                st.session_state.section_rows[i]["name"] = st.text_input(
+                    "", value=row["name"], key=f"sn{i}",
+                    placeholder="e.g. Class 10 A",
+                    label_visibility="collapsed")
+            with c3:
+                st.markdown(f"<div class='field-label'>Students</div>",
+                            unsafe_allow_html=True)
+                st.session_state.section_rows[i]["strength"] = st.number_input(
+                    "", value=row["strength"], min_value=1,
+                    key=f"ss{i}", label_visibility="collapsed")
+            with c4:
+                st.markdown(f"<div class='field-label'>Subjects & periods"
+                            f"<span class='hint-tag'>Math:5,English:4</span></div>",
+                            unsafe_allow_html=True)
+                st.session_state.section_rows[i]["subjects"] = st.text_input(
+                    "", value=row["subjects"], key=f"sb{i}",
+                    placeholder="e.g. Math:5,English:5,Science:4",
+                    label_visibility="collapsed")
+            with c5:
+                st.markdown("<br><br>", unsafe_allow_html=True)
+                if st.button("✕", key=f"sd{i}", help="Remove section"):
+                    st.session_state.section_rows.pop(i)
+                    st.rerun()
+
+    if st.button("＋  Add section", key="add_section"):
+        st.session_state.section_rows.append(
+            {"id":"","name":"","strength":30,"subjects":""})
+        st.rerun()
+
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    # ── GENERATE BUTTON ──────────────────────────────────
+    c1, c2, c3 = st.columns([1.2, 2, 1.2])
     with c2:
         generate = st.button("🚀  Generate Timetable",
                              type="primary", use_container_width=True)
 
     if generate:
         teachers_list = []
-        for i,row in enumerate(st.session_state.teacher_rows):
+        for i, row in enumerate(st.session_state.teacher_rows):
             if not row["name"].strip(): continue
             subjs = [s.strip() for s in row["subjects"].split(",") if s.strip()]
             unavail = []
             if row["unavailable"].strip():
                 try:
                     parts = [x.strip() for x in row["unavailable"].split(",")]
-                    unavail = [(int(parts[j]),int(parts[j+1]))
-                               for j in range(0,len(parts)-1,2)]
+                    unavail = [(int(parts[j]), int(parts[j+1]))
+                               for j in range(0, len(parts)-1, 2)]
                 except: pass
             teachers_list.append(Teacher(
                 id=f"T{i+1:03d}", name=row["name"].strip(),
                 subjects=subjs, unavailable=unavail))
+
         rooms_list = []
         for row in st.session_state.room_rows:
             if not row["id"].strip(): continue
             rooms_list.append(Room(
                 id=row["id"].strip(), name=row["name"].strip(),
                 capacity=int(row["capacity"])))
+
         sections_list = []
         for row in st.session_state.section_rows:
             if not row["id"].strip(): continue
@@ -403,7 +570,7 @@ if st.session_state.page == "home":
             for item in row["subjects"].split(","):
                 item = item.strip()
                 if ":" in item:
-                    p = item.rsplit(":",1)
+                    p = item.rsplit(":", 1)
                     try: sp[p[0].strip()] = int(p[1].strip())
                     except: pass
             sections_list.append(Section(
@@ -448,7 +615,7 @@ else:
     timetable = st.session_state.timetable
     violations= st.session_state.violations
 
-    col_back, col_regen = st.columns([1,1])
+    col_back, col_regen = st.columns([1, 1])
     with col_back:
         if st.button("← Back to home"):
             st.session_state.page = "home"; st.rerun()
