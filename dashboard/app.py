@@ -291,16 +291,24 @@ with tl:
     <div class="topbar">
       <div class="logo-block">
         {logo_html}
-        <div class="logo-name">Slotra</div>
       </div>
     </div>""", unsafe_allow_html=True)
 with tr:
-    st.markdown("<div style='padding-top:.6rem;text-align:right;'>",
-                unsafe_allow_html=True)
+    from datetime import datetime
+    today = datetime.now().strftime("%d %b %Y")
+    day_name = datetime.now().strftime("%A")
+    st.markdown(f"""
+    <div style='display:flex;align-items:center;justify-content:flex-end;
+                gap:12px;padding-top:.5rem;'>
+      <div style='text-align:right;'>
+        <div style='font-size:13px;font-weight:600;color:{accent};'>{day_name}</div>
+        <div style='font-size:11px;color:{sub};'>{today}</div>
+      </div>
+    </div>
+    """, unsafe_allow_html=True)
     if st.button(f"{t_icon} {t_lbl}", key="theme"):
         st.session_state.dark_mode = not st.session_state.dark_mode
         st.rerun()
-    st.markdown("</div>", unsafe_allow_html=True)
 
 # ════════════════════════════════════════════════════════
 #  HOME PAGE
