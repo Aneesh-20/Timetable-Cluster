@@ -80,10 +80,6 @@ section[data-testid="stSidebar"]{{display:none;}}
     padding:.5rem 0 .75rem;border-bottom:0.5px solid {border};
     margin-bottom:1rem;position:relative;z-index:10;}}
 .logo-img{{width:52px;height:52px;border-radius:12px;object-fit:cover;}}
-.right-bar{{display:flex;align-items:center;gap:14px;}}
-.date-block{{text-align:right;}}
-.date-day{{font-size:13px;font-weight:700;color:{accent};line-height:1.3;}}
-.date-full{{font-size:11px;color:{sub};}}
 .hero-section{{text-align:center;padding:2rem 1rem .75rem;position:relative;z-index:1;}}
 .hero-title{{font-size:64px;font-weight:900;color:{accent};
     letter-spacing:-3px;line-height:1;margin-bottom:.3rem;font-family:Georgia,serif;}}
@@ -93,20 +89,21 @@ section[data-testid="stSidebar"]{{display:none;}}
     border-radius:14px;overflow:hidden;max-width:380px;margin:0 auto 1.5rem;}}
 .stat-cell{{background:{card};padding:.9rem;text-align:center;}}
 .stat-num{{font-size:26px;font-weight:800;color:{accent};line-height:1;}}
-.stat-lbl{{font-size:9px;color:{sub};text-transform:uppercase;letter-spacing:.07em;margin-top:3px;}}
+.stat-lbl{{font-size:9px;color:{sub};text-transform:uppercase;
+    letter-spacing:.07em;margin-top:3px;}}
 .feat-grid{{display:grid;grid-template-columns:repeat(auto-fit,minmax(148px,1fr));
     gap:10px;margin-bottom:1.5rem;position:relative;z-index:1;}}
-.fc{{background:{card};border:0.5px solid {border};border-radius:12px;padding:.9rem;
-    transition:border-color .2s,transform .15s;}}
+.fc{{background:{card};border:0.5px solid {border};border-radius:12px;
+    padding:.9rem;transition:border-color .2s,transform .15s;}}
 .fc:hover{{border-color:{accent}80;transform:translateY(-3px);}}
 .fi{{font-size:18px;margin-bottom:7px;display:block;}}
 .ft{{font-size:12px;font-weight:700;color:{text};margin-bottom:2px;}}
 .fd{{font-size:11px;color:{sub};line-height:1.45;}}
 .sec-lbl{{font-size:11px;font-weight:700;color:{sub};
     text-transform:uppercase;letter-spacing:.09em;margin:1.25rem 0 .5rem;}}
-.row-badge{{font-size:10px;font-weight:700;padding:2px 8px;border-radius:999px;
-    background:{accent}20;color:{accent};display:inline-block;
-    margin-bottom:6px;letter-spacing:.05em;}}
+.row-badge{{font-size:10px;font-weight:700;padding:2px 8px;
+    border-radius:999px;background:{accent}20;color:{accent};
+    display:inline-block;margin-bottom:6px;letter-spacing:.05em;}}
 .field-label{{font-size:10px;font-weight:600;color:{sub};
     text-transform:uppercase;letter-spacing:.07em;margin-bottom:3px;}}
 .hint-tag{{font-size:10px;color:{accent};background:{accent}15;
@@ -114,7 +111,8 @@ section[data-testid="stSidebar"]{{display:none;}}
 .mc{{background:{card2};border:0.5px solid {border};
     border-radius:12px;padding:1.1rem;text-align:center;margin:3px;}}
 .mv{{font-size:34px;font-weight:800;color:{accent};line-height:1;}}
-.ml{{font-size:10px;color:{sub};text-transform:uppercase;letter-spacing:.06em;margin-top:3px;}}
+.ml{{font-size:10px;color:{sub};text-transform:uppercase;
+    letter-spacing:.06em;margin-top:3px;}}
 div[data-testid="stButton"]>button[kind="primary"]{{
     background:linear-gradient(135deg,{accent} 0%,#1565C0 100%)!important;
     color:#FFFFFF!important;border:none!important;border-radius:10px!important;
@@ -126,15 +124,13 @@ div[data-testid="stButton"]>button[kind="primary"]:hover{{
 div[data-testid="stButton"]>button:not([kind="primary"]){{
     font-size:12px!important;padding:4px 10px!important;
     min-height:0!important;height:auto!important;
-    border-radius:8px!important;
-    border:0.5px solid {border}!important;
-    background:{card2}!important;color:{text}!important;
-}}
+    border-radius:8px!important;border:0.5px solid {border}!important;
+    background:{card2}!important;color:{text}!important;}}
 div[data-testid="stExpander"]{{background:{card}!important;
     border:0.5px solid {border}!important;border-radius:12px!important;}}
 #splash{{position:fixed;inset:0;z-index:99999;background:#0A0E1A;
-    display:flex;flex-direction:column;align-items:center;justify-content:center;
-    animation:splashFade 0.6s ease 1.6s forwards;}}
+    display:flex;flex-direction:column;align-items:center;
+    justify-content:center;animation:splashFade 0.6s ease 1.6s forwards;}}
 @keyframes splashFade{{0%{{opacity:1;transform:scale(1);}}
     100%{{opacity:0;transform:scale(1.06);pointer-events:none;}}}}
 .splash-logo{{width:120px;height:120px;border-radius:28px;object-fit:cover;
@@ -160,13 +156,16 @@ if st.session_state.page == "splash":
     if logo_b64:
         st.markdown(f"""
         <div id="splash">
-          <img class="splash-logo" src="data:image/png;base64,{logo_b64}" alt="Slotra"/>
+          <img class="splash-logo"
+               src="data:image/png;base64,{logo_b64}" alt="Slotra"/>
           <div class="splash-name">Slotra</div>
           <div class="splash-bar"></div>
         </div>
         <script>
-          setTimeout(function(){{var s=document.getElementById('splash');
-          if(s)s.style.display='none';}},2300);
+          setTimeout(function(){{
+            var s=document.getElementById('splash');
+            if(s)s.style.display='none';
+          }},2300);
         </script>""", unsafe_allow_html=True)
     st.session_state.page = "home"
     import time; time.sleep(1.8)
@@ -189,8 +188,8 @@ with tr:
       <div style="text-align:right;border-right:1.5px solid {accent}40;
                   padding-right:12px;margin-right:2px;">
         <div style="font-size:13px;font-weight:700;color:{accent};
-                    line-height:1.2;letter-spacing:.01em;">{day_name}</div>
-        <div style="font-size:10px;color:{sub};letter-spacing:.03em;">{today}</div>
+                    line-height:1.2;">{day_name}</div>
+        <div style="font-size:10px;color:{sub};">{today}</div>
       </div>
     </div>""", unsafe_allow_html=True)
     if st.button(f"{t_icon}", key="theme"):
@@ -214,143 +213,166 @@ if st.session_state.page == "home":
       <div class="hero-sub">Smart Timetables Through Clustering</div>
     </div>
     <div class="stat-row">
-      <div class="stat-cell"><div class="stat-num">{n_assign}</div>
-        <div class="stat-lbl">Assignments</div></div>
-      <div class="stat-cell"><div class="stat-num">{n_viol}</div>
-        <div class="stat-lbl">Violations</div></div>
-      <div class="stat-cell"><div class="stat-num">{n_sections}</div>
-        <div class="stat-lbl">Sections</div></div>
+      <div class="stat-cell">
+        <div class="stat-num">{n_assign}</div>
+        <div class="stat-lbl">Assignments</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-num">{n_viol}</div>
+        <div class="stat-lbl">Violations</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-num">{n_sections}</div>
+        <div class="stat-lbl">Sections</div>
+      </div>
     </div>
     <div class="feat-grid">
-      <div class="fc"><span class="fi">Lightning</span>
+      <div class="fc"><span class="fi">⚡</span>
         <div class="ft">Instant generation</div>
         <div class="fd">Full week timetable in under 1 second.</div></div>
-      <div class="fc"><span class="fi">Check</span>
+      <div class="fc"><span class="fi">✅</span>
         <div class="ft">Zero conflicts</div>
         <div class="fd">No teacher or room ever double-booked.</div></div>
-      <div class="fc"><span class="fi">School</span>
+      <div class="fc"><span class="fi">🏫</span>
         <div class="ft">Any school</div>
         <div class="fd">Input your own teachers, rooms and sections.</div></div>
-      <div class="fc"><span class="fi">Chart</span>
+      <div class="fc"><span class="fi">📊</span>
         <div class="ft">Live analytics</div>
         <div class="fd">Charts, heatmaps and workload views.</div></div>
-      <div class="fc"><span class="fi">DNA</span>
+      <div class="fc"><span class="fi">🧬</span>
         <div class="ft">GA solver</div>
         <div class="fd">300-generation genetic algorithm.</div></div>
-      <div class="fc"><span class="fi">Download</span>
+      <div class="fc"><span class="fi">📥</span>
         <div class="ft">CSV export</div>
         <div class="fd">Download any class timetable instantly.</div></div>
     </div>""", unsafe_allow_html=True)
 
-    st.markdown(f"<div class='sec-lbl'>Configure your school</div>",
+    st.markdown("<div class='sec-lbl'>Configure your school</div>",
                 unsafe_allow_html=True)
 
-    # TEACHERS
+    # ── TEACHERS ─────────────────────────────────────────
     st.markdown(f"""<div style='background:{card2};border:0.5px solid {border};
         border-radius:12px;padding:12px 16px 4px;margin-bottom:6px;'>
       <span style='font-size:14px;font-weight:700;color:{text};'>Teachers</span>
       <span style='font-size:11px;color:{sub};margin-left:10px;'>
-        Name · Subjects · Unavailable Day,Period e.g. 0,1</span>
+        Name · Subjects they teach</span>
     </div>""", unsafe_allow_html=True)
+
     for i, row in enumerate(st.session_state.teacher_rows):
-        st.markdown(f"<div style='background:{row_bg};border:0.5px solid {border}50;"
-                    f"border-radius:8px;padding:6px 10px 0;margin-bottom:6px;'>"
-                    f"<span class='row-badge'>Teacher {i+1}</span></div>",
-                    unsafe_allow_html=True)
-        c1,c2,c3 = st.columns([2,2,.35])
+        st.markdown(
+            f"<div style='background:{row_bg};border:0.5px solid {border}50;"
+            f"border-radius:8px;padding:6px 10px 0;margin-bottom:6px;'>"
+            f"<span class='row-badge'>Teacher {i+1}</span></div>",
+            unsafe_allow_html=True)
+        c1, c2, c3 = st.columns([2, 2, .35])
         with c1:
             st.markdown("<div class='field-label'>Full name</div>",
                         unsafe_allow_html=True)
             st.session_state.teacher_rows[i]["name"] = st.text_input(
                 "name", value=row["name"], key=f"tn{i}",
-                placeholder="e.g. Mr. Kumar", label_visibility="collapsed")
+                placeholder="e.g. Mr. Kumar",
+                label_visibility="collapsed")
         with c2:
-            st.markdown("<div class='field-label'>Subjects "
-                        "<span class='hint-tag'>comma separated</span></div>",
-                        unsafe_allow_html=True)
+            st.markdown(
+                "<div class='field-label'>Subjects "
+                "<span class='hint-tag'>comma separated</span></div>",
+                unsafe_allow_html=True)
             st.session_state.teacher_rows[i]["subjects"] = st.text_input(
                 "subjects", value=row["subjects"], key=f"ts{i}",
-                placeholder="e.g. Math,Physics", label_visibility="collapsed")
+                placeholder="e.g. Math,Physics",
+                label_visibility="collapsed")
         with c3:
-        with c4:
             st.markdown("<br><br>", unsafe_allow_html=True)
-            with c3:
-                st.markdown("<br><br>", unsafe_allow_html=True)
             if st.button("X", key=f"td{i}"):
-                st.session_state.teacher_rows.pop(i); st.rerun()
+                st.session_state.teacher_rows.pop(i)
+                st.rerun()
+
     if st.button("+ Add teacher", key="add_teacher"):
         st.session_state.teacher_rows.append(
-            {"name":"","subjects":"","unavailable":""}); st.rerun()
+            {"name": "", "subjects": "", "unavailable": ""})
+        st.rerun()
 
     st.markdown("<br>", unsafe_allow_html=True)
 
-    # ROOMS
+    # ── ROOMS ────────────────────────────────────────────
     st.markdown(f"""<div style='background:{card2};border:0.5px solid {border};
         border-radius:12px;padding:12px 16px 4px;margin-bottom:6px;'>
       <span style='font-size:14px;font-weight:700;color:{text};'>Rooms</span>
       <span style='font-size:11px;color:{sub};margin-left:10px;'>
         Room ID · Name · Capacity</span>
     </div>""", unsafe_allow_html=True)
+
     for i, row in enumerate(st.session_state.room_rows):
-        st.markdown(f"<div style='background:{row_bg};border:0.5px solid {border}50;"
-                    f"border-radius:8px;padding:6px 10px 0;margin-bottom:6px;'>"
-                    f"<span class='row-badge'>Room {i+1}</span></div>",
-                    unsafe_allow_html=True)
-        c1,c2,c3,c4 = st.columns([1.5,2.5,1.2,.35])
+        st.markdown(
+            f"<div style='background:{row_bg};border:0.5px solid {border}50;"
+            f"border-radius:8px;padding:6px 10px 0;margin-bottom:6px;'>"
+            f"<span class='row-badge'>Room {i+1}</span></div>",
+            unsafe_allow_html=True)
+        c1, c2, c3, c4 = st.columns([1.5, 2.5, 1.2, .35])
         with c1:
             st.markdown("<div class='field-label'>Room ID</div>",
                         unsafe_allow_html=True)
             st.session_state.room_rows[i]["id"] = st.text_input(
                 "rid", value=row["id"], key=f"ri{i}",
-                placeholder="e.g. R101", label_visibility="collapsed")
+                placeholder="e.g. R101",
+                label_visibility="collapsed")
         with c2:
             st.markdown("<div class='field-label'>Room name</div>",
                         unsafe_allow_html=True)
             st.session_state.room_rows[i]["name"] = st.text_input(
                 "rname", value=row["name"], key=f"rn{i}",
-                placeholder="e.g. Room 101", label_visibility="collapsed")
+                placeholder="e.g. Room 101",
+                label_visibility="collapsed")
         with c3:
-            st.markdown("<div class='field-label'>Capacity "
-                        "<span class='hint-tag'>max students</span></div>",
-                        unsafe_allow_html=True)
+            st.markdown(
+                "<div class='field-label'>Capacity "
+                "<span class='hint-tag'>max students</span></div>",
+                unsafe_allow_html=True)
             st.session_state.room_rows[i]["capacity"] = st.number_input(
                 "cap", value=row["capacity"], min_value=1,
                 key=f"rc{i}", label_visibility="collapsed")
         with c4:
             st.markdown("<br><br>", unsafe_allow_html=True)
             if st.button("X", key=f"rd{i}"):
-                st.session_state.room_rows.pop(i); st.rerun()
+                st.session_state.room_rows.pop(i)
+                st.rerun()
+
     if st.button("+ Add room", key="add_room"):
         st.session_state.room_rows.append(
-            {"id":"","name":"","capacity":30}); st.rerun()
+            {"id": "", "name": "", "capacity": 30})
+        st.rerun()
 
     st.markdown("<br>", unsafe_allow_html=True)
 
-    # SECTIONS
+    # ── SECTIONS ─────────────────────────────────────────
     st.markdown(f"""<div style='background:{card2};border:0.5px solid {border};
         border-radius:12px;padding:12px 16px 4px;margin-bottom:6px;'>
       <span style='font-size:14px;font-weight:700;color:{text};'>Sections</span>
       <span style='font-size:11px;color:{sub};margin-left:10px;'>
         ID · Name · Students · Subjects:periods e.g. Math:5,English:4</span>
     </div>""", unsafe_allow_html=True)
+
     for i, row in enumerate(st.session_state.section_rows):
-        st.markdown(f"<div style='background:{row_bg};border:0.5px solid {border}50;"
-                    f"border-radius:8px;padding:6px 10px 0;margin-bottom:6px;'>"
-                    f"<span class='row-badge'>Section {i+1}</span></div>",
-                    unsafe_allow_html=True)
-        c1,c2,c3,c4,c5 = st.columns([1,1.5,.8,3,.35])
+        st.markdown(
+            f"<div style='background:{row_bg};border:0.5px solid {border}50;"
+            f"border-radius:8px;padding:6px 10px 0;margin-bottom:6px;'>"
+            f"<span class='row-badge'>Section {i+1}</span></div>",
+            unsafe_allow_html=True)
+        c1, c2, c3, c4, c5 = st.columns([1, 1.5, .8, 3, .35])
         with c1:
             st.markdown("<div class='field-label'>Section ID</div>",
                         unsafe_allow_html=True)
             st.session_state.section_rows[i]["id"] = st.text_input(
                 "sid", value=row["id"], key=f"si{i}",
-                placeholder="e.g. 10A", label_visibility="collapsed")
+                placeholder="e.g. 10A",
+                label_visibility="collapsed")
         with c2:
             st.markdown("<div class='field-label'>Name</div>",
                         unsafe_allow_html=True)
             st.session_state.section_rows[i]["name"] = st.text_input(
                 "sname", value=row["name"], key=f"sn{i}",
-                placeholder="e.g. Class 10 A", label_visibility="collapsed")
+                placeholder="e.g. Class 10 A",
+                label_visibility="collapsed")
         with c3:
             st.markdown("<div class='field-label'>Students</div>",
                         unsafe_allow_html=True)
@@ -358,9 +380,10 @@ if st.session_state.page == "home":
                 "str", value=row["strength"], min_value=1,
                 key=f"ss{i}", label_visibility="collapsed")
         with c4:
-            st.markdown("<div class='field-label'>Subjects "
-                        "<span class='hint-tag'>Math:5,English:4</span></div>",
-                        unsafe_allow_html=True)
+            st.markdown(
+                "<div class='field-label'>Subjects "
+                "<span class='hint-tag'>Math:5,English:4</span></div>",
+                unsafe_allow_html=True)
             st.session_state.section_rows[i]["subjects"] = st.text_input(
                 "ssubj", value=row["subjects"], key=f"sb{i}",
                 placeholder="e.g. Math:5,English:5,Science:4",
@@ -368,64 +391,73 @@ if st.session_state.page == "home":
         with c5:
             st.markdown("<br><br>", unsafe_allow_html=True)
             if st.button("X", key=f"sd{i}"):
-                st.session_state.section_rows.pop(i); st.rerun()
+                st.session_state.section_rows.pop(i)
+                st.rerun()
+
     if st.button("+ Add section", key="add_section"):
         st.session_state.section_rows.append(
-            {"id":"","name":"","strength":30,"subjects":""}); st.rerun()
+            {"id": "", "name": "", "strength": 30, "subjects": ""})
+        st.rerun()
 
     st.markdown("<br>", unsafe_allow_html=True)
-    c1,c2,c3 = st.columns([1.2,2,1.2])
+    c1, c2, c3 = st.columns([1.2, 2, 1.2])
     with c2:
         generate = st.button("Generate Timetable",
                              type="primary", use_container_width=True)
 
     if generate:
         teachers_list = []
-        for i,row in enumerate(st.session_state.teacher_rows):
-            if not row["name"].strip(): continue
-            subjs = [s.strip() for s in row["subjects"].split(",") if s.strip()]
-            unavail = []
-            if row["unavailable"].strip():
-                try:
-                    parts = [x.strip() for x in row["unavailable"].split(",")]
-                    unavail = [(int(parts[j]),int(parts[j+1]))
-                               for j in range(0,len(parts)-1,2)]
-                except: pass
+        for i, row in enumerate(st.session_state.teacher_rows):
+            if not row["name"].strip():
+                continue
+            subjs = [s.strip() for s in row["subjects"].split(",")
+                     if s.strip()]
             teachers_list.append(Teacher(
                 id=f"T{i+1:03d}", name=row["name"].strip(),
-                subjects=subjs, unavailable=unavail))
+                subjects=subjs, unavailable=[]))
         rooms_list = []
         for row in st.session_state.room_rows:
-            if not row["id"].strip(): continue
-            rooms_list.append(Room(id=row["id"].strip(),
-                name=row["name"].strip(), capacity=int(row["capacity"])))
+            if not row["id"].strip():
+                continue
+            rooms_list.append(Room(
+                id=row["id"].strip(), name=row["name"].strip(),
+                capacity=int(row["capacity"])))
         sections_list = []
         for row in st.session_state.section_rows:
-            if not row["id"].strip(): continue
+            if not row["id"].strip():
+                continue
             sp = {}
             for item in row["subjects"].split(","):
                 item = item.strip()
                 if ":" in item:
-                    p = item.rsplit(":",1)
-                    try: sp[p[0].strip()] = int(p[1].strip())
-                    except: pass
-            sections_list.append(Section(id=row["id"].strip(),
-                name=row["name"].strip(), strength=int(row["strength"]),
-                subject_periods=sp))
-        if not teachers_list: st.error("Add at least one teacher.")
-        elif not rooms_list:  st.error("Add at least one room.")
-        elif not sections_list: st.error("Add at least one section.")
+                    p = item.rsplit(":", 1)
+                    try:
+                        sp[p[0].strip()] = int(p[1].strip())
+                    except:
+                        pass
+            sections_list.append(Section(
+                id=row["id"].strip(), name=row["name"].strip(),
+                strength=int(row["strength"]), subject_periods=sp))
+
+        if not teachers_list:
+            st.error("Add at least one teacher.")
+        elif not rooms_list:
+            st.error("Add at least one room.")
+        elif not sections_list:
+            st.error("Add at least one section.")
         else:
             with st.spinner("Building conflict-free timetable..."):
                 try:
-                    solver = TimetableSolver(teachers_list,rooms_list,sections_list)
+                    solver = TimetableSolver(
+                        teachers_list, rooms_list, sections_list)
                     solver.create_variables()
                     solver.add_coverage_constraint()
                     solver.add_section_no_clash()
                     solver.add_teacher_no_clash()
                     solver.add_room_no_clash()
-                    tt   = solver.solve()
-                    viol = check_hard_constraints(tt,teachers_list,rooms_list)
+                    tt = solver.solve()
+                    viol = check_hard_constraints(
+                        tt, teachers_list, rooms_list)
                     st.session_state.timetable  = tt
                     st.session_state.violations = viol
                     st.session_state.teachers   = teachers_list
@@ -444,153 +476,190 @@ else:
     rooms     = st.session_state.rooms
     sections  = st.session_state.sections
     timetable = st.session_state.timetable
-    violations= st.session_state.violations
+    violations = st.session_state.violations
 
-    cb, cr2 = st.columns([1,1])
+    cb, cr2 = st.columns([1, 1])
     with cb:
-        if st.button("Back to home"):
-            st.session_state.page = "home"; st.rerun()
+        if st.button("← Back to home"):
+            st.session_state.page = "home"
+            st.rerun()
     with cr2:
-        if st.button("Regenerate", type="primary"):
+        if st.button("🔄 Regenerate", type="primary"):
             with st.spinner("Regenerating..."):
                 try:
-                    solver = TimetableSolver(teachers,rooms,sections)
+                    solver = TimetableSolver(teachers, rooms, sections)
                     solver.create_variables()
                     solver.add_coverage_constraint()
                     solver.add_section_no_clash()
                     solver.add_teacher_no_clash()
                     solver.add_room_no_clash()
-                    tt   = solver.solve()
-                    viol = check_hard_constraints(tt,teachers,rooms)
+                    tt = solver.solve()
+                    viol = check_hard_constraints(tt, teachers, rooms)
                     st.session_state.timetable  = tt
                     st.session_state.violations = viol
-                    timetable=tt; violations=viol; st.rerun()
-                except Exception as e: st.error(f"Error: {e}")
+                    timetable = tt
+                    violations = viol
+                    st.rerun()
+                except Exception as e:
+                    st.error(f"Error: {e}")
 
     st.markdown("<br>", unsafe_allow_html=True)
-    c1,c2,c3,c4 = st.columns(4)
-    with c1: st.markdown(f"<div class='mc'><div class='mv'>{len(timetable)}</div>"
-                         f"<div class='ml'>Assignments</div></div>",unsafe_allow_html=True)
-    with c2: st.markdown(f"<div class='mc'><div class='mv'>{len(violations)}</div>"
-                         f"<div class='ml'>Violations</div></div>",unsafe_allow_html=True)
-    with c3: st.markdown(f"<div class='mc'><div class='mv'>{len(sections)}</div>"
-                         f"<div class='ml'>Sections</div></div>",unsafe_allow_html=True)
-    with c4: st.markdown(f"<div class='mc'><div class='mv'>{len(teachers)}</div>"
-                         f"<div class='ml'>Teachers</div></div>",unsafe_allow_html=True)
+    c1, c2, c3, c4 = st.columns(4)
+    with c1:
+        st.markdown(f"<div class='mc'><div class='mv'>{len(timetable)}</div>"
+                    f"<div class='ml'>Assignments</div></div>",
+                    unsafe_allow_html=True)
+    with c2:
+        st.markdown(f"<div class='mc'><div class='mv'>{len(violations)}</div>"
+                    f"<div class='ml'>Violations</div></div>",
+                    unsafe_allow_html=True)
+    with c3:
+        st.markdown(f"<div class='mc'><div class='mv'>{len(sections)}</div>"
+                    f"<div class='ml'>Sections</div></div>",
+                    unsafe_allow_html=True)
+    with c4:
+        st.markdown(f"<div class='mc'><div class='mv'>{len(teachers)}</div>"
+                    f"<div class='ml'>Teachers</div></div>",
+                    unsafe_allow_html=True)
 
     st.markdown("<br>", unsafe_allow_html=True)
-    if len(violations)==0: st.success("PERFECT timetable - zero conflicts!")
+    if len(violations) == 0:
+        st.success("✅ PERFECT timetable — zero conflicts!")
     else:
-        st.error(f"{len(violations)} conflicts found")
-        for v in violations: st.caption(f"* {v}")
+        st.error(f"❌ {len(violations)} conflicts found")
+        for v in violations:
+            st.caption(f"• {v}")
     st.markdown("---")
 
-    days = ["Monday","Tuesday","Wednesday","Thursday","Friday"]
+    days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
     rows = []
     for a in timetable:
-        teacher = next((t for t in teachers if t.id==a.teacher_id),None)
-        rows.append({"Section":a.section_id,"Subject":a.subject,
-            "Teacher":teacher.name if teacher else a.teacher_id,
-            "Room":a.room_id,"Day":days[a.timeslot.day],
-            "DayN":a.timeslot.day,"PerN":a.timeslot.period+1,
-            "Period":f"P{a.timeslot.period+1}"})
-    df = pd.DataFrame(rows).sort_values(["DayN","PerN"])
+        teacher = next((t for t in teachers if t.id == a.teacher_id), None)
+        rows.append({
+            "Section": a.section_id, "Subject": a.subject,
+            "Teacher": teacher.name if teacher else a.teacher_id,
+            "Room": a.room_id, "Day": days[a.timeslot.day],
+            "DayN": a.timeslot.day,
+            "PerN": a.timeslot.period + 1,
+            "Period": f"P{a.timeslot.period + 1}"
+        })
+    df = pd.DataFrame(rows).sort_values(["DayN", "PerN"])
 
-    tab1,tab2,tab3,tab4,tab5 = st.tabs([
-        "Class Timetable","Teacher View",
-        "Room Utilization","Charts","Download"])
+    tab1, tab2, tab3, tab4, tab5 = st.tabs([
+        "📅 Class Timetable", "👨‍🏫 Teacher View",
+        "🏠 Room Utilization", "📊 Charts", "📥 Download"])
 
     with tab1:
-        sel = st.selectbox("Select class",[s.id for s in sections],key="sec")
-        dfs = df[df["Section"]==sel].copy()
+        sel = st.selectbox("Select class",
+                           [s.id for s in sections], key="sec")
+        dfs = df[df["Section"] == sel].copy()
         subjs = dfs["Subject"].unique().tolist()
         clrs = px.colors.qualitative.Set2
-        sc = {s:clrs[i%len(clrs)] for i,s in enumerate(subjs)}
-        grid={}
+        sc = {s: clrs[i % len(clrs)] for i, s in enumerate(subjs)}
+        grid = {}
         for day in days:
-            grid[day]={}
-            for p in range(1,9):
-                m=dfs[(dfs["Day"]==day)&(dfs["PerN"]==p)]
-                grid[day][f"P{p}"]=(
-                    f"{m.iloc[0]['Subject']} | {m.iloc[0]['Teacher']} | {m.iloc[0]['Room']}"
+            grid[day] = {}
+            for p in range(1, 9):
+                m = dfs[(dfs["Day"] == day) & (dfs["PerN"] == p)]
+                grid[day][f"P{p}"] = (
+                    f"{m.iloc[0]['Subject']} | "
+                    f"{m.iloc[0]['Teacher']} | {m.iloc[0]['Room']}"
                     if not m.empty else "")
-        gdf=pd.DataFrame(grid,index=[f"P{p}" for p in range(1,9)])
+        gdf = pd.DataFrame(grid,
+                           index=[f"P{p}" for p in range(1, 9)])
         def cc(v):
             if not v: return ""
-            s=v.split(" | ")[0]
-            return f"background-color:{sc.get(s,'#888')};color:black;font-weight:500"
-        st.dataframe(gdf.style.map(cc),use_container_width=True,height=320)
-        leg=st.columns(max(len(subjs),1))
-        for i,s in enumerate(subjs):
+            s = v.split(" | ")[0]
+            return (f"background-color:{sc.get(s, '#888')};"
+                    f"color:black;font-weight:500")
+        st.dataframe(gdf.style.map(cc),
+                     use_container_width=True, height=320)
+        leg = st.columns(max(len(subjs), 1))
+        for i, s in enumerate(subjs):
             leg[i].markdown(
                 f"<span style='background:{sc[s]};padding:3px 10px;"
                 f"border-radius:6px;color:black;font-size:11px'>{s}</span>",
                 unsafe_allow_html=True)
-        st.markdown("<br>",unsafe_allow_html=True)
-        st.dataframe(dfs[["Day","Period","Subject","Teacher","Room"]]
-                     .reset_index(drop=True),use_container_width=True)
+        st.markdown("<br>", unsafe_allow_html=True)
+        st.dataframe(
+            dfs[["Day", "Period", "Subject", "Teacher", "Room"]]
+            .reset_index(drop=True), use_container_width=True)
 
     with tab2:
-        sel_t=st.selectbox("Select teacher",[t.name for t in teachers],key="tch")
-        dft=df[df["Teacher"]==sel_t].copy()
-        st.markdown(f"**{sel_t}** - **{len(dft)} periods** this week")
-        ppd=dft.groupby("Day").size().reset_index(name="Periods")
-        fig_t=px.bar(ppd,x="Day",y="Periods",title=f"{sel_t} periods per day",
-                     color="Periods",color_continuous_scale="Blues",
-                     category_orders={"Day":days})
-        fig_t.update_layout(plot_bgcolor=plot_bg,paper_bgcolor=plot_bg,font_color=text)
-        st.plotly_chart(fig_t,use_container_width=True)
-        st.dataframe(dft[["Day","Period","Section","Subject","Room"]]
-                     .reset_index(drop=True),use_container_width=True)
+        sel_t = st.selectbox("Select teacher",
+                             [t.name for t in teachers], key="tch")
+        dft = df[df["Teacher"] == sel_t].copy()
+        st.markdown(f"**{sel_t}** — **{len(dft)} periods** this week")
+        ppd = dft.groupby("Day").size().reset_index(name="Periods")
+        fig_t = px.bar(ppd, x="Day", y="Periods",
+                       title=f"{sel_t} — periods per day",
+                       color="Periods", color_continuous_scale="Blues",
+                       category_orders={"Day": days})
+        fig_t.update_layout(plot_bgcolor=plot_bg,
+                            paper_bgcolor=plot_bg, font_color=text)
+        st.plotly_chart(fig_t, use_container_width=True)
+        st.dataframe(
+            dft[["Day", "Period", "Section", "Subject", "Room"]]
+            .reset_index(drop=True), use_container_width=True)
 
     with tab3:
-        total=5*8
-        ru=df.groupby("Room").size().reset_index(name="Used")
-        ru["Free"]=total-ru["Used"]
-        ru["Utilization %"]=(ru["Used"]/total*100).round(1)
-        fig_r=px.bar(ru,x="Room",y=["Used","Free"],title="Room utilization",
-                     barmode="stack",
-                     color_discrete_map={"Used":accent,"Free":"#444444"})
-        fig_r.update_layout(plot_bgcolor=plot_bg,paper_bgcolor=plot_bg,font_color=text)
-        st.plotly_chart(fig_r,use_container_width=True)
-        st.dataframe(ru,use_container_width=True)
+        total = 5 * 8
+        ru = df.groupby("Room").size().reset_index(name="Used")
+        ru["Free"] = total - ru["Used"]
+        ru["Utilization %"] = (ru["Used"] / total * 100).round(1)
+        fig_r = px.bar(ru, x="Room", y=["Used", "Free"],
+                       title="Room utilization", barmode="stack",
+                       color_discrete_map={"Used": accent,
+                                           "Free": "#444444"})
+        fig_r.update_layout(plot_bgcolor=plot_bg,
+                            paper_bgcolor=plot_bg, font_color=text)
+        st.plotly_chart(fig_r, use_container_width=True)
+        st.dataframe(ru, use_container_width=True)
 
     with tab4:
-        cl,cr=st.columns(2)
+        cl, cr = st.columns(2)
         with cl:
-            sc2=df.groupby("Subject").size().reset_index(name="Periods")
-            fig_pie=px.pie(sc2,names="Subject",values="Periods",
-                           title="Subject distribution",
-                           color_discrete_sequence=px.colors.qualitative.Set2)
-            fig_pie.update_layout(paper_bgcolor=plot_bg,font_color=text)
-            st.plotly_chart(fig_pie,use_container_width=True)
+            sc2 = df.groupby("Subject").size().reset_index(name="Periods")
+            fig_pie = px.pie(sc2, names="Subject", values="Periods",
+                             title="Subject distribution",
+                             color_discrete_sequence=
+                             px.colors.qualitative.Set2)
+            fig_pie.update_layout(paper_bgcolor=plot_bg, font_color=text)
+            st.plotly_chart(fig_pie, use_container_width=True)
         with cr:
-            tl=df.groupby("Teacher").size().reset_index(name="Total Periods")
-            fig_bar=px.bar(tl,x="Teacher",y="Total Periods",
-                           title="Teacher workload",color="Total Periods",
-                           color_continuous_scale="Teal")
-            fig_bar.update_layout(plot_bgcolor=plot_bg,paper_bgcolor=plot_bg,font_color=text)
-            st.plotly_chart(fig_bar,use_container_width=True)
-        ss=df.groupby(["Section","Subject"]).size().reset_index(name="Periods")
-        fig_h=px.density_heatmap(ss,x="Subject",y="Section",z="Periods",
-                                  title="Periods per subject per class",
-                                  color_continuous_scale="Blues")
-        fig_h.update_layout(plot_bgcolor=plot_bg,paper_bgcolor=plot_bg,font_color=text)
-        st.plotly_chart(fig_h,use_container_width=True)
+            tl = df.groupby("Teacher").size().reset_index(
+                name="Total Periods")
+            fig_bar = px.bar(tl, x="Teacher", y="Total Periods",
+                             title="Teacher workload",
+                             color="Total Periods",
+                             color_continuous_scale="Teal")
+            fig_bar.update_layout(plot_bgcolor=plot_bg,
+                                  paper_bgcolor=plot_bg, font_color=text)
+            st.plotly_chart(fig_bar, use_container_width=True)
+        ss = df.groupby(["Section", "Subject"]).size().reset_index(
+            name="Periods")
+        fig_h = px.density_heatmap(
+            ss, x="Subject", y="Section", z="Periods",
+            title="Periods per subject per class",
+            color_continuous_scale="Blues")
+        fig_h.update_layout(plot_bgcolor=plot_bg,
+                            paper_bgcolor=plot_bg, font_color=text)
+        st.plotly_chart(fig_h, use_container_width=True)
 
     with tab5:
         for section in sections:
-            ds=(df[df["Section"]==section.id]
-                [["Day","Period","Subject","Teacher","Room"]]
-                .reset_index(drop=True))
+            ds = (df[df["Section"] == section.id]
+                  [["Day", "Period", "Subject", "Teacher", "Room"]]
+                  .reset_index(drop=True))
             st.download_button(
-                label=f"Download {section.id} CSV",
+                label=f"📥 Download {section.id} (CSV)",
                 data=ds.to_csv(index=False),
                 file_name=f"timetable_{section.id}.csv",
-                mime="text/csv",key=f"dl_{section.id}")
+                mime="text/csv", key=f"dl_{section.id}")
         st.download_button(
-            label="Download ALL classes CSV",
-            data=df[["Section","Day","Period","Subject","Teacher","Room"]]
+            label="📥 Download ALL classes (CSV)",
+            data=df[["Section", "Day", "Period",
+                      "Subject", "Teacher", "Room"]]
             .reset_index(drop=True).to_csv(index=False),
             file_name="timetable_all.csv",
-            mime="text/csv",key="dl_all")
+            mime="text/csv", key="dl_all")
