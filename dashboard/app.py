@@ -257,7 +257,7 @@ if st.session_state.page == "home":
                     f"border-radius:8px;padding:6px 10px 0;margin-bottom:6px;'>"
                     f"<span class='row-badge'>Teacher {i+1}</span></div>",
                     unsafe_allow_html=True)
-        c1,c2,c3,c4 = st.columns([2,2,2,.35])
+        c1,c2,c3 = st.columns([2,2,.35])
         with c1:
             st.markdown("<div class='field-label'>Full name</div>",
                         unsafe_allow_html=True)
@@ -272,15 +272,10 @@ if st.session_state.page == "home":
                 "subjects", value=row["subjects"], key=f"ts{i}",
                 placeholder="e.g. Math,Physics", label_visibility="collapsed")
         with c3:
-            st.markdown("<div class='field-label'>Unavailable "
-                        "<span class='hint-tag'>Day,Period e.g. 0,1</span></div>",
-                        unsafe_allow_html=True)
-            st.session_state.teacher_rows[i]["unavailable"] = st.text_input(
-                "unavailable", value=row["unavailable"], key=f"tu{i}",
-                placeholder="e.g. 0,1 or leave blank",
-                label_visibility="collapsed")
         with c4:
             st.markdown("<br><br>", unsafe_allow_html=True)
+            with c3:
+                st.markdown("<br><br>", unsafe_allow_html=True)
             if st.button("X", key=f"td{i}"):
                 st.session_state.teacher_rows.pop(i); st.rerun()
     if st.button("+ Add teacher", key="add_teacher"):
