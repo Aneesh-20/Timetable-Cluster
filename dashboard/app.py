@@ -53,7 +53,7 @@ border  = "rgba(79,195,247,0.15)" if D else "rgba(21,101,192,0.15)"
 grid_c  = "rgba(255,255,255,0.04)" if D else "rgba(0,0,0,0.04)"
 row_bg  = "#0D1320" if D else "#F8FAFF"
 plot_bg = "rgba(0,0,0,0)"
-t_icon  = "Sun" if D else "Moon"
+t_icon  = "☀️" if D else "🌙"
 t_lbl   = "Light" if D else "Dark"
 
 logo_b64 = ""
@@ -123,6 +123,13 @@ div[data-testid="stButton"]>button[kind="primary"]{{
     box-shadow:0 4px 18px {accent}50!important;}}
 div[data-testid="stButton"]>button[kind="primary"]:hover{{
     opacity:.88!important;transform:translateY(-1px)!important;}}
+div[data-testid="stButton"]>button:not([kind="primary"]){{
+    font-size:12px!important;padding:4px 10px!important;
+    min-height:0!important;height:auto!important;
+    border-radius:8px!important;
+    border:0.5px solid {border}!important;
+    background:{card2}!important;color:{text}!important;
+}}
 div[data-testid="stExpander"]{{background:{card}!important;
     border:0.5px solid {border}!important;border-radius:12px!important;}}
 #splash{{position:fixed;inset:0;z-index:99999;background:#0A0E1A;
@@ -178,17 +185,17 @@ with tl:
 with tr:
     st.markdown(f"""
     <div style="display:flex;align-items:center;justify-content:flex-end;
-                gap:14px;padding-top:.45rem;">
-      <div class="date-block">
-        <div class="date-day">{day_name}</div>
-        <div class="date-full">{today}</div>
+                gap:10px;padding-top:.4rem;">
+      <div style="text-align:right;border-right:1.5px solid {accent}40;
+                  padding-right:12px;margin-right:2px;">
+        <div style="font-size:13px;font-weight:700;color:{accent};
+                    line-height:1.2;letter-spacing:.01em;">{day_name}</div>
+        <div style="font-size:10px;color:{sub};letter-spacing:.03em;">{today}</div>
       </div>
     </div>""", unsafe_allow_html=True)
-    col_btn = st.columns([1])[0]
-    with col_btn:
-        if st.button(f"{t_icon} {t_lbl}", key="theme"):
-            st.session_state.dark_mode = not st.session_state.dark_mode
-            st.rerun()
+    if st.button(f"{t_icon}", key="theme"):
+        st.session_state.dark_mode = not st.session_state.dark_mode
+        st.rerun()
 
 # ════════════════════════════════════════════════════════
 #  HOME PAGE
