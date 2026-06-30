@@ -80,7 +80,8 @@ st.set_page_config(page_title="Slotra", layout="wide", initial_sidebar_state="ex
 
 INITIAL_STATES = {
     "timetable": None, "violations": [], "dark_mode": True, "page": "home",
-    "teachers": [], "simulation_headroom": 3
+    "teachers": [], "simulation_headroom": 3, "input_mode": "excel",
+    "manual_instructors": [{"name": "Mr. Kumar", "subjects": "Math,Physics", "max_days": 5, "max_periods": 22, "exclusions": "0:1, 4:7"}]
 }
 for key, val in INITIAL_STATES.items():
     if key not in st.session_state: st.session_state[key] = val
@@ -89,9 +90,7 @@ D = st.session_state.dark_mode
 THEME = {
     "bg": "#0B0E14" if D else "#F5F7FA",
     "card": "rgba(22, 28, 45, 0.65)" if D else "rgba(255, 255, 255, 0.9)",
-    "card2": "rgba(30, 41, 67, 0.4)" if D else "rgba(240, 244, 255, 0.7)",
     "accent": "#4FC3F7" if D else "#0070F3",
-    "accent_rgb": "79, 195, 247" if D else "0, 112, 243",
     "text": "#F3F4F6" if D else "#111827",
     "sub": "#9CA3AF" if D else "#4B5563",
     "border": "rgba(79,195,247,0.18)" if D else "rgba(0,112,243,0.15)",
@@ -105,6 +104,7 @@ st.markdown(f"""
     .grid-bg {{position:fixed; inset:0; pointer-events:none; z-index:0; background-image: linear-gradient({THEME['grid']} 1px, transparent 1px), linear-gradient(90deg, {THEME['grid']} 1px, transparent 1px); background-size: 32px 32px;}}
     div[data-testid="stFileUploader"] {{background-color: {THEME['card']}; border: 2px dashed {THEME['accent']}50!important; border-radius: 14px;}}
     div[data-testid="stButton"]>button[kind="primary"] {{ background: linear-gradient(135deg, {THEME['accent']} 0%, #0051B3 100%)!important; color: #FFFFFF!important; border: none!important; font-weight: 700!important; border-radius: 10px!important; width: 100%;}}
+    .instructor-card {{background: {THEME['card']}; border: 1px solid {THEME['border']}; border-radius: 12px; padding: 1.2rem; margin-bottom: 1rem;}}
 </style>
 <div class="grid-bg"></div>
 """, unsafe_allow_html=True)
@@ -113,7 +113,6 @@ st.markdown(f"""
 with st.sidebar:
     st.markdown("### 🎛️ Spatial & Cohort Setup")
     
-    # 1. Dynamic Rooms / Classrooms Configurator
     st.markdown("#### 🏫 Rooms / Classrooms")
     num_rooms = st.number_input("Number of Rooms Available", min_value=1, max_value=10, value=3)
     rooms_list = []
@@ -127,7 +126,6 @@ with st.sidebar:
         
     st.markdown("---")
     
-    # 2. Dynamic Sections & Weekly Curricular Load Requirements
     st.markdown("#### 👥 Student Cohort Sections")
     num_sections = st.number_input("Number of Sections", min_value=1, max_value=5, value=2)
     
@@ -146,70 +144,132 @@ with st.sidebar:
     
     sections_list = []
     for j in range(num_sections):
-        sec_char = chr(65 + j) # Generates A, B, C, etc.
+        sec_char = chr(65 + j)
         s_name = st.text_input(f"Section {sec_char} Name", value=f"Grade 10-{sec_char}", key=f"sname_{j}")
         sections_list.append(Section(id=f"SEC_{sec_char}", name=s_name, strength=35, subject_periods=curriculum_load_map))
 
 # ── MAIN PANEL INTERFACE ─────────────────────────────────
 if st.session_state.page == "home":
-    st.markdown("<div style='text-align:center; padding: 2rem 0;'><h1 style='font-size: 50px; font-weight: 800; font-family:\"JetBrains Mono\";'>SLOTRA</h1><p style='color:#4FC3F7; text-transform:uppercase; letter-spacing:0.1em;'>Automated Infrastructure Scheduler</p></div>", unsafe_allow_html=True)
+    st.markdown("<div style='text-align:center; padding: 1.5rem 0;'><h1 style='font-size: 50px; font-weight: 800; font-family:\"JetBrains Mono\";'>SLOTRA</h1><p style='color:#4FC3F7; text-transform:uppercase; letter-spacing:0.1em;'>Automated Infrastructure Scheduler</p></div>", unsafe_allow_html=True)
 
     _, center_panel, _ = st.columns([1, 2, 1])
     with center_panel:
-        st.markdown(f"<div style='background:{THEME['card']}; border:1px solid {THEME['border']}; border-radius:16px; padding:2rem;'>", unsafe_allow_html=True)
-        st.markdown("<h3 style='margin-top:0; text-align:center;'>1. Upload Roster Spreadsheet</h3>", unsafe_allow_html=True)
-        
-        uploaded_file = st.file_uploader("Upload matrix details", type=["xlsx", "xls", "csv"], label_visibility="collapsed")
-        
-        st.markdown("<h3 style='margin-top:1.5rem; text-align:center;'>2. Execute Constraint Solver</h3>", unsafe_allow_html=True)
-        generate_matrix = st.button("Generate Optimized Timetable", type="primary")
-        st.markdown("</div>", unsafe_allow_html=True)
+        # Strategy Picker Row
+        mode_col1, mode_col2 = st.columns(2)
+        with mode_col1:
+            if st.button("📁 Use Excel/CSV Upload", use_container_width=True, type="secondary" if st.session_state.input_mode == "manual" else "primary"):
+                st.session_state.input_mode = "excel"
+                st.rerun()
+        with mode_col2:
+            if st.button("✍️ Manual Scheduling Setup", use_container_width=True, type="secondary" if st.session_state.input_mode == "excel" else "primary"):
+                st.session_state.input_mode = "manual"
+                st.rerun()
 
-    if generate_matrix:
-        if uploaded_file is None:
-            st.error("Engine Fault: Please drag and drop your instructor roster sheet before executing the solver.")
-        else:
-            with st.spinner("Compiling Spatial Infrastructure Arrays & Resolving Constraints..."):
+        st.markdown(f"<div style='background:{THEME['card']}; border:1px solid {THEME['border']}; border-radius:16px; padding:2rem; margin-top:1rem;'>", unsafe_allow_html=True)
+        
+        teachers_list = []
+        ready_to_solve = False
+
+        # Workflow 1: Spreadsheet File Parser
+        if st.session_state.input_mode == "excel":
+            st.markdown("<h3 style='margin-top:0; text-align:center;'>Upload Roster Spreadsheet</h3>", unsafe_allow_html=True)
+            uploaded_file = st.file_uploader("Upload matrix details", type=["xlsx", "xls", "csv"], label_visibility="collapsed")
+            if uploaded_file is not None:
                 try:
                     if uploaded_file.name.endswith('.csv'): df_input = pd.read_csv(uploaded_file)
                     else: df_input = pd.read_excel(uploaded_file)
-                    
                     df_input.columns = [str(c).strip().lower() for c in df_input.columns]
                     
                     if 'name' not in df_input.columns or 'subjects' not in df_input.columns:
                         st.error("Matrix Template Mismatch: File must contain 'Name' and 'Subjects' columns.")
                     else:
-                        teachers_list = []
                         for idx, row in df_input.iterrows():
                             if pd.isna(row['name']) or str(row['name']).strip() == "": continue
-                            t_name = str(row['name']).strip()
                             subjs = [s.strip() for s in str(row['subjects']).split(",") if s.strip()]
+                            max_d = int(row['max days']) if 'max days' in df_input.columns and not pd.isna(row['max days']) else 5
+                            max_p = int(row['max periods']) if 'max periods' in df_input.columns and not pd.isna(row['max periods']) else 20
                             
-                            max_days = int(row['max days']) if 'max days' in df_input.columns and not pd.isna(row['max days']) else 5
-                            max_periods = int(row['max periods']) if 'max periods' in df_input.columns and not pd.isna(row['max periods']) else 20
-                            
-                            t_obj = Teacher(id=f"T{idx+1:03d}", name=t_name, subjects=subjs, unavailable=[])
-                            t_obj.max_days = max_days
-                            t_obj.max_periods = max_periods
+                            t_obj = Teacher(id=f"T{idx+1:03d}", name=str(row['name']).strip(), subjects=subjs, unavailable=[])
+                            t_obj.max_days, t_obj.max_periods = max_d, max_p
                             teachers_list.append(t_obj)
+                        ready_to_solve = True
+                except Exception as e:
+                    st.error(f"File Parse Error: {e}")
 
-                        # Pipeline components into our core scheduling solver engine
-                        solver = TimetableSolver(teachers_list, rooms_list, sections_list)
-                        solver.create_variables()
-                        solver.add_coverage_constraint()
-                        solver.add_section_no_clash()
-                        solver.add_teacher_no_clash()
-                        solver.add_room_no_clash()
-                        
-                        generated_tt = solver.solve()
-                        calculated_violations = check_hard_constraints(generated_tt, teachers_list, rooms_list)
-                        
-                        st.session_state.update({
-                            "timetable": generated_tt, "violations": calculated_violations,
-                            "teachers": teachers_list, "rooms": rooms_list, "sections": sections_list,
-                            "page": "dashboard"
-                        })
+        # Workflow 2: Dynamic Form Builder (Manual Input Matrix)
+        else:
+            st.markdown("<h3 style='margin-top:0; text-align:center;'>Instructor Resource Matrix</h3>", unsafe_allow_html=True)
+            
+            for idx, entry in enumerate(st.session_state.manual_instructors):
+                st.markdown(f"<div class='instructor-card'>", unsafe_allow_html=True)
+                st.caption(f"⚙️ RESOURCE #{idx+1:02d}")
+                
+                c_name, c_sub = st.columns([2, 2])
+                with c_name:
+                    name_val = st.text_input("Instructor Name", value=entry["name"], key=f"mname_{idx}")
+                with c_sub:
+                    sub_val = st.text_input("Subjects (Comma Separated)", value=entry["subjects"], key=f"msub_{idx}")
+                
+                c_d, c_p, c_ex, c_del = st.columns([1, 1, 2, 0.5])
+                with c_d:
+                    days_val = st.number_input("Max Days", min_value=1, max_value=5, value=entry["max_days"], key=f"mdays_{idx}")
+                with c_p:
+                    per_val = st.number_input("Max Periods", min_value=1, max_value=40, value=entry["max_periods"], key=f"mper_{idx}")
+                with c_ex:
+                    ex_val = st.text_input("Exclusions (Day:Slot)", value=entry["exclusions"], key=f"mex_{idx}")
+                with c_del:
+                    st.markdown("<br>", unsafe_allow_html=True)
+                    if st.button("❌", key=f"mdel_{idx}"):
+                        st.session_state.manual_instructors.pop(idx)
                         st.rerun()
+                st.markdown("</div>", unsafe_allow_html=True)
+                
+                # Update current structure
+                st.session_state.manual_instructors[idx] = {
+                    "name": name_val, "subjects": sub_val, "max_days": days_val, "max_periods": per_val, "exclusions": ex_val
+                }
+
+            if st.button("➕ Add New Resource Allocation Row"):
+                st.session_state.manual_instructors.append({"name": "", "subjects": "", "max_days": 5, "max_periods": 20, "exclusions": ""})
+                st.rerun()
+
+            # Map current structural inputs into core system items
+            for idx, entry in enumerate(st.session_state.manual_instructors):
+                if entry["name"].strip() == "": continue
+                subjs = [s.strip() for s in entry["subjects"].split(",") if s.strip()]
+                t_obj = Teacher(id=f"T{idx+1:03d}", name=entry["name"].strip(), subjects=subjs, unavailable=[])
+                t_obj.max_days, t_obj.max_periods = entry["max_days"], entry["max_periods"]
+                teachers_list.append(t_obj)
+            
+            if len(teachers_list) > 0:
+                ready_to_solve = True
+
+        st.markdown("<hr style='border-top:1px solid rgba(255,255,255,0.05);'>", unsafe_allow_html=True)
+        generate_matrix = st.button("Generate Optimized Timetable", type="primary")
+        st.markdown("</div>", unsafe_allow_html=True)
+
+    if generate_matrix:
+        if not ready_to_solve:
+            st.error("Engine Fault: No valid resources found. Please either drop a file or fill out manual entries.")
+        else:
+            with st.spinner("Compiling Spatial Infrastructure Arrays & Resolving Constraints..."):
+                try:
+                    solver = TimetableSolver(teachers_list, rooms_list, sections_list)
+                    solver.create_variables()
+                    solver.add_coverage_constraint()
+                    solver.add_section_no_clash()
+                    solver.add_teacher_no_clash()
+                    solver.add_room_no_clash()
+                    
+                    generated_tt = solver.solve()
+                    calculated_violations = check_hard_constraints(generated_tt, teachers_list, rooms_list)
+                    
+                    st.session_state.update({
+                        "timetable": generated_tt, "violations": calculated_violations,
+                        "teachers": teachers_list, "rooms": rooms_list, "sections": sections_list,
+                        "page": "dashboard"
+                    })
+                    st.rerun()
                 except Exception as e:
                     st.error(f"Solver Engine Crash Vector: {e}")
 
@@ -219,7 +279,7 @@ else:
     sections, timetable = st.session_state.sections, st.session_state.timetable
     violations = st.session_state.violations
 
-    if st.button("← Upload Another Dataset Matrix"):
+    if st.button("← Modify Constraints / Inputs"):
         st.session_state.page = "home"
         st.rerun()
 
