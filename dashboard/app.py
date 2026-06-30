@@ -108,33 +108,12 @@ if os.path.exists(logo_filename):
     with open(logo_filename, "rb") as image_file:
         logo_src = f"data:image/png;base64,{base64.b64encode(image_file.read()).decode()}"
 else:
-    # High-fidelity SVG code injection fallback when local asset file isn't found
+    # High-fidelity SVG backup layer if local asset pipeline drops out
     fallback_svg = f"""
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 85" width="280" height="70">
-      <defs>
-        <filter id="premium-shadow" x="-20%" y="-20%" width="140%" height="140%">
-          <feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#000000" flood-opacity="0.6"/>
-        </filter>
-        <linearGradient id="gradient-accent" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stop-color="#0C5274" />
-          <stop offset="100%" stop-color="{THEME['accent']}" />
-        </linearGradient>
-      </defs>
-      <g filter="url(#premium-shadow)">
-        <path d="M 46 12 C 18 12, 16 42, 38 44 C 60 46, 56 74, 28 74" fill="none" stroke="url(#gradient-accent)" stroke-width="6.5" stroke-linecap="round"/>
-        <path d="M 38 20 A 15 15 0 0 1 50 36" fill="none" stroke="{THEME['accent_neon']}" stroke-width="2.5" stroke-linecap="round" opacity="0.8"/>
-        <rect x="25" y="48" width="24" height="18" rx="2" fill="rgba(12,82,116,0.3)" stroke="{THEME['accent']}" stroke-width="1.2" />
-        <line x1="33" y1="48" x2="33" y2="66" stroke="{THEME['accent']}" stroke-width="0.8" opacity="0.5"/>
-        <line x1="41" y1="48" x2="41" y2="66" stroke="{THEME['accent']}" stroke-width="0.8" opacity="0.5"/>
-        <line x1="25" y1="54" x2="49" y2="54" stroke="{THEME['accent']}" stroke-width="0.8" opacity="0.5"/>
-        <line x1="25" y1="60" x2="49" y2="60" stroke="{THEME['accent']}" stroke-width="0.8" opacity="0.5"/>
-        <rect x="34" y="55" width="6" height="4" fill="{THEME['accent_neon']}" rx="0.5" />
-        <rect x="42" y="61" width="6" height="4" fill="#FFFFFF" rx="0.5" />
-      </g>
-      <g font-family="'Inter', sans-serif">
-        <text x="76" y="43" font-size="34" font-weight="900" fill="#FFFFFF" letter-spacing="4">SLOTR<tspan fill="{THEME['accent_neon']}">A</tspan></text>
-        <text x="78" y="62" font-family="monospace" font-size="8.5" font-weight="700" fill="{THEME['sub']}" letter-spacing="1.8">PLAN SMART. ACHIEVE MORE.</text>
-      </g>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+        <rect width="100" height="100" fill="#0E131F" rx="14"/>
+        <circle cx="50" cy="50" r="35" fill="none" stroke="{THEME['accent']}" stroke-width="5"/>
+        <path d="M 50 25 L 50 50 L 70 50" fill="none" stroke="{THEME['accent_neon']}" stroke-width="5" stroke-linecap="round"/>
     </svg>
     """
     logo_src = f"data:image/svg+xml;base64,{base64.b64encode(fallback_svg.encode()).decode()}"
@@ -157,22 +136,21 @@ if not st.session_state.splash_done:
                 justify-content: center;
                 align-items: center;
                 z-index: 99999999 !important;
-                animation: exitStage 0.4s ease-in-out 1.7s forwards;
             }}
             .netflix-preloader img {{
-                width: 320px;
-                height: auto;
+                width: 200px;
+                height: 200px;
+                object-fit: cover;
+                border-radius: 20px;
+                border: 2px solid {THEME['accent']};
                 filter: drop-shadow(0px 15px 40px rgba(0,0,0,0.8));
                 animation: cinematicPulse 1.8s cubic-bezier(0.215, 0.610, 0.355, 1) forwards;
             }}
             @keyframes cinematicPulse {{
-                0% {{ opacity: 0; transform: scale(0.8) letter-spacing; filter: brightness(0.4); }}
-                25% {{ opacity: 1; transform: scale(1.03); filter: brightness(1.2); }}
+                0% {{ opacity: 0; transform: scale(0.85); filter: brightness(0.5); }}
+                35% {{ opacity: 1; transform: scale(1.02); filter: brightness(1.2); }}
                 75% {{ opacity: 1; transform: scale(1.0); filter: brightness(1.0); }}
-                100% {{ opacity: 0; transform: scale(1.12); filter: blur(4px); }}
-            }}
-            @keyframes exitStage {{
-                to {{ opacity: 0; visibility: hidden; pointer-events: none; }}
+                100% {{ opacity: 0; transform: scale(1.08); filter: blur(4px); }}
             }}
         </style>
         <div class="netflix-preloader">
@@ -185,33 +163,69 @@ if not st.session_state.splash_done:
     st.rerun()
 
 # ── WEB APPLICATION INTERFACE CORE LAYOUT ────────────────
-logo_html = f'<div class="brand-header-layer"><img src="{logo_src}" class="app-corner-logo" /></div>'
+logo_html = f"""
+<div class="brand-header-layer">
+    <img src="{logo_src}" class="app-corner-logo" />
+    <div class="brand-text-zone">
+        <div class="brand-title">SLOTRA</div>
+        <div class="brand-tagline">PLAN SMART. ACHIEVE MORE.</div>
+    </div>
+</div>
+"""
 
 st.markdown(f"""
 <style>
     .stApp {{background-color: {THEME['bg']}!important; color: {THEME['text']}!important; font-family: 'Inter', sans-serif;}}
     
-    /* Top Left Glass Container Structural Placement rules */
-    .block-container {{padding: 8.5rem 3rem 3rem !important; max-width: 1400px; position: relative; z-index: 10;}}
+    /* Grid Background and Core Layout Offset */
+    .block-container {{padding: 9.5rem 3rem 3rem !important; max-width: 1400px; position: relative; z-index: 10;}}
     .grid-bg {{position:fixed; inset:0; pointer-events:none; z-index:1; background-image: linear-gradient({THEME['grid']} 1px, transparent 1px), linear-gradient(90deg, {THEME['grid']} 1px, transparent 1px); background-size: 32px 32px;}}
     
-    /* HIGH ACCENTUATED BORDER CONTAINER MATCHING ALL FOUR SIDES */
+    /* PREMIUM 4-SIDED VISIBLE NEON BORDER LAYOUT CONTROLLER */
     .brand-header-layer {{
         position: fixed;
         top: 24px;
         left: 24px;
-        z-index: 99999 !important;
-        padding: 12px 20px;
-        background: #0E131F !important;    /* Solidifies contrast color against the dead-black page background */
-        border: 2px solid #14A8B7 !important; /* Forces highly visible matching cyan frame across all four margins */
+        z-index: 999999 !important;
+        padding: 10px 20px 10px 14px;
+        background: #0E131F !important;
+        border: 2px solid {THEME['accent']} !important;    /* Highly visible neon framing around all 4 sides */
         border-radius: 14px;
-        box-shadow: 0 10px 32px rgba(0, 0, 0, 0.85), 0 0 15px rgba(20, 168, 183, 0.2);
-        display: inline-block !important;
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.85), 0 0 20px rgba(20, 168, 183, 0.25);
+        display: flex !important;
+        align-items: center !important;
+        gap: 14px !important;
+        min-width: 290px;
     }}
+    
     .app-corner-logo {{
         display: block !important;
-        height: 48px !important;
-        width: auto !important;
+        height: 46px !important;
+        width: 46px !important;
+        object-fit: cover !important;
+        border-radius: 8px;
+    }}
+    
+    .brand-text-zone {{
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important;
+    }}
+    .brand-title {{
+        color: #FFFFFF !important;
+        font-family: 'Inter', system-ui, sans-serif !important;
+        font-size: 24px !important;
+        font-weight: 900 !important;
+        letter-spacing: 3px !important;
+        line-height: 1.1 !important;
+    }}
+    .brand-tagline {{
+        color: {THEME['sub']} !important;
+        font-family: monospace !important;
+        font-size: 8px !important;
+        font-weight: 700 !important;
+        letter-spacing: 1px !important;
+        margin-top: 2px !important;
     }}
     
     div[data-testid="stFileUploader"] {{background-color: {THEME['card']}; border: 2px dashed {THEME['accent']}50!important; border-radius: 14px;}}
@@ -224,7 +238,7 @@ st.markdown(f"""
 
 # ── SIDEBAR SPATIAL INFRASTRUCTURE CONFIGURATOR ──────────
 with st.sidebar:
-    st.markdown("<div style='height: 50px;'></div>", unsafe_allow_html=True) # Spatial layout shift cushion
+    st.markdown("<div style='height: 50px;'></div>", unsafe_allow_html=True)
     st.markdown("### 🎛️ Spatial & Cohort Setup")
     
     st.markdown("#### 🏫 Rooms / Classrooms")
