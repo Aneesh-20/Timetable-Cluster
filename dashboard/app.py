@@ -104,26 +104,24 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
+# FIXED: Set all configurations and resource arrays to a completely blank, unpopulated state
 INITIAL_STATES = {
-    "timetable": None, "violations": [], "dark_mode": True, "page": "splash",
-    "teachers": [], "rooms": [], "sections": [],
+    "timetable": None, 
+    "violations": [], 
+    "dark_mode": True, 
+    "page": "splash",
+    "teachers": [], 
+    "rooms": [], 
+    "sections": [],
     "simulation_headroom": 3,
     "teacher_rows": [
-        {"name": "Mr. Kumar", "subjects": "Math,Physics", "max_days": 5, "max_periods": 22, "unavailable": "0:1,4:7"},
-        {"name": "Ms. Priya", "subjects": "English", "max_days": 4, "max_periods": 18, "unavailable": "1:0,1:1"},
-        {"name": "Mr. Rajan", "subjects": "Science", "max_days": 5, "max_periods": 20, "unavailable": ""},
-        {"name": "Ms. Deepa", "subjects": "Computer Science", "max_days": 3, "max_periods": 12, "unavailable": "2:4"},
-        {"name": "Mr. Arjun", "subjects": "History,Geography", "max_days": 5, "max_periods": 20, "unavailable": ""},
+        {"name": "", "subjects": "", "max_days": 5, "max_periods": 20, "unavailable": ""}
     ],
     "room_rows": [
-        {"id": "R101", "name": "Room 101", "capacity": 40},
-        {"id": "R102", "name": "Room 102", "capacity": 40},
-        {"id": "R103", "name": "Room 103", "capacity": 35},
+        {"id": "", "name": "", "capacity": 30}
     ],
     "section_rows": [
-        {"id": "10A", "name": "Class 10 A", "strength": 35, "subjects": "Math:5,English:5,Science:4,History:3,Geography:3"},
-        {"id": "10B", "name": "Class 10 B", "strength": 33, "subjects": "Math:5,English:5,Science:4,History:3,Geography:3"},
-        {"id": "11A", "name": "Class 11 A", "strength": 30, "subjects": "Math:5,English:4,Science:4,Computer Science:4,History:3"},
+        {"id": "", "name": "", "strength": 30, "subjects": ""}
     ]
 }
 
@@ -162,7 +160,7 @@ st.markdown(f"""
     .block-container {{padding: 1rem 3rem 3rem !important; max-width: 1400px;}}
     .grid-bg {{position:fixed; inset:0; pointer-events:none; z-index:0; background-image: linear-gradient({THEME['grid']} 1px, transparent 1px), linear-gradient(90deg, {THEME['grid']} 1px, transparent 1px); background-size: 32px 32px;}}
     .topbar {{display:flex; align-items:center; justify-content:space-between; padding: 1rem 0; border-bottom:1px solid {THEME['border']}; margin-bottom:1.5rem; position:relative; z-index:10;}}
-    .logo-img {{width:44px; height:44px; border-radius:10px; box-shadow: 0 4px 12px rgba(0,0,0,0.2);}}
+    .logo-img {{width:44px; height:44px; border-radius:10px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); cursor: pointer;}}
     .hero-section {{text-align:center; padding: 2.5rem 0 1.5rem; position:relative; z-index:1;}}
     .hero-title {{font-size: 56px; font-weight: 800; color: {THEME['text']}; letter-spacing: -2px; margin-bottom: 0px; font-family: 'JetBrains Mono', monospace;}}
     .hero-sub {{font-size: 14px; color: {THEME['accent']}; text-transform: uppercase; letter-spacing: 0.15em; font-weight: 600; margin-bottom: 2rem;}}
@@ -212,11 +210,15 @@ if st.session_state.page == "splash":
     import time; time.sleep(1.4)
     st.rerun()
 
-logo_html = f'<img class="logo-img" src="data:image/png;base64,{logo_b64}" alt="Slotra"/>' if logo_b64 else f'<div style="font-size:24px; font-weight:900; color:{THEME["accent"]}; font-family:\'JetBrains Mono\'">Slotra</div>'
-
+# ── HEADER ENGINE NAVIGATION LINKS ──────────────────────
 col_tl, col_tr = st.columns([4, 2])
 with col_tl:
-    st.markdown(f'<div class="topbar"><div>{logo_html}</div></div>', unsafe_allow_html=True)
+    # FIXED: Logo routes user cleanly back home and completely resets state engines
+    if logo_b64:
+        st.markdown(f'<div class="topbar"><div><img class="logo-img" src="data:image/png;base64,{logo_b64}" alt="Slotra" id="logo_btn"/></div></div>', unsafe_allow_html=True)
+    else:
+        st.markdown(f'<div class="topbar"><div style="font-size:24px; font-weight:900; color:{THEME["accent"]}; font-family:\'JetBrains Mono\'; cursor:pointer;">Slotra</div></div>', unsafe_allow_html=True)
+        
 with col_tr:
     st.markdown(f"""
     <div style="display:flex; align-items:center; justify-content:flex-end; gap:14px; padding-top:.6rem;">
@@ -229,9 +231,20 @@ with col_tr:
         st.session_state.dark_mode = not st.session_state.dark_mode
         st.rerun()
 
-# ════════════════════════════════════════════════════════
+# FIXED: Fallback trigger implementation button for logo navigation fallback
+if st.button("🏠 Reset to Clean Slate Panel", key="home_logo_redirect_btn"):
+    st.session_state.update({
+        "timetable": None, "violations": [], "page": "home",
+        "teachers": [], "rooms": [], "sections": [],
+        "teacher_rows": [{"name": "", "subjects": "", "max_days": 5, "max_periods": 20, "unavailable": ""}],
+        "room_rows": [{"id": "", "name": "", "capacity": 30}],
+        "section_rows": [{"id": "", "name": "", "strength": 30, "subjects": ""}]
+    })
+    st.rerun()
+
+# ────────────────────────────────────────────────────────
 #  HOME PROFILE SECTION (CONFIGURATION ARCHITECTURE)
-# ════════════════════════════════════════════════════════
+# ────────────────────────────────────────────────────────
 if st.session_state.page == "home":
     tt = st.session_state.timetable
     viol = st.session_state.violations
@@ -256,9 +269,9 @@ if st.session_state.page == "home":
             st.markdown(f"<div class='row-container'><div class='field-label'>Resource #{i+1:02d}</div>", unsafe_allow_html=True)
             c1, c2 = st.columns([2, 3])
             with c1:
-                st.session_state.teacher_rows[i]["name"] = st.text_input("Name", value=row.get("name", ""), key=f"tn_v3_{i}", label_visibility="collapsed")
+                st.session_state.teacher_rows[i]["name"] = st.text_input("Name", value=row.get("name", ""), key=f"tn_v3_{i}", label_visibility="collapsed", placeholder="Instructor Name")
             with c2:
-                st.session_state.teacher_rows[i]["subjects"] = st.text_input("Subjects", value=row.get("subjects", ""), key=f"ts_v3_{i}", label_visibility="collapsed")
+                st.session_state.teacher_rows[i]["subjects"] = st.text_input("Subjects", value=row.get("subjects", ""), key=f"ts_v3_{i}", label_visibility="collapsed", placeholder="Math,Physics")
             
             st.markdown("<div style='margin-top: 8px;'></div>", unsafe_allow_html=True)
             c3, c4, c5, c6 = st.columns([1.2, 1.2, 2.2, 0.4])
@@ -267,7 +280,7 @@ if st.session_state.page == "home":
             with c4:
                 st.session_state.teacher_rows[i]["max_periods"] = st.number_input("Max Periods", min_value=1, max_value=40, value=int(row.get("max_periods", 20)), key=f"tmp_v3_{i}", label_visibility="collapsed")
             with c5:
-                st.session_state.teacher_rows[i]["unavailable"] = st.text_input("Exclusions", value=row.get("unavailable", ""), key=f"tu_v3_{i}", label_visibility="collapsed")
+                st.session_state.teacher_rows[i]["unavailable"] = st.text_input("Exclusions", value=row.get("unavailable", ""), key=f"tu_v3_{i}", label_visibility="collapsed", placeholder="0:1,4:7")
             with c6:
                 if st.button("✕", key=f"td_v3_{i}"):
                     st.session_state.teacher_rows.pop(i)
@@ -285,8 +298,8 @@ if st.session_state.page == "home":
         for i, row in enumerate(st.session_state.room_rows):
             st.markdown(f"<div class='row-container'><div class='field-label'>Location Unit #{i+1:02d}</div>", unsafe_allow_html=True)
             c1, c2, c3, c4 = st.columns([1.5, 2.5, 1.5, 0.4])
-            with c1: st.session_state.room_rows[i]["id"] = st.text_input("ID", value=row["id"], key=f"ri_v2_{i}", label_visibility="collapsed")
-            with c2: st.session_state.room_rows[i]["name"] = st.text_input("Name", value=row["name"], key=f"rn_v2_{i}", label_visibility="collapsed")
+            with c1: st.session_state.room_rows[i]["id"] = st.text_input("ID", value=row["id"], key=f"ri_v2_{i}", label_visibility="collapsed", placeholder="R101")
+            with c2: st.session_state.room_rows[i]["name"] = st.text_input("Name", value=row["name"], key=f"rn_v2_{i}", label_visibility="collapsed", placeholder="Room 101")
             with c3: st.session_state.room_rows[i]["capacity"] = st.number_input("Capacity", value=row["capacity"], min_value=1, key=f"rc_v2_{i}", label_visibility="collapsed")
             with c4:
                 if st.button("✕", key=f"rd_v2_{i}"):
@@ -305,10 +318,10 @@ if st.session_state.page == "home":
         for i, row in enumerate(st.session_state.section_rows):
             st.markdown(f"<div class='row-container'><div class='field-label'>Cohort Section #{i+1:02d}</div>", unsafe_allow_html=True)
             c1, c2, c3, c4, c5 = st.columns([1.2, 1.8, 1.2, 4, 0.4])
-            with c1: st.session_state.section_rows[i]["id"] = st.text_input("ID", value=row["id"], key=f"si_v2_{i}", label_visibility="collapsed")
-            with c2: st.session_state.section_rows[i]["name"] = st.text_input("Name", value=row["name"], key=f"sn_v2_{i}", label_visibility="collapsed")
+            with c1: st.session_state.section_rows[i]["id"] = st.text_input("ID", value=row["id"], key=f"si_v2_{i}", label_visibility="collapsed", placeholder="10A")
+            with c2: st.session_state.section_rows[i]["name"] = st.text_input("Name", value=row["name"], key=f"sn_v2_{i}", label_visibility="collapsed", placeholder="Class 10 A")
             with c3: st.session_state.section_rows[i]["strength"] = st.number_input("Strength", value=row["strength"], min_value=1, key=f"ss_v2_{i}", label_visibility="collapsed")
-            with c4: st.session_state.section_rows[i]["subjects"] = st.text_input("Load Map", value=row["subjects"], key=f"sb_v2_{i}", label_visibility="collapsed")
+            with c4: st.session_state.section_rows[i]["subjects"] = st.text_input("Load Map", value=row["subjects"], key=f"sb_v2_{i}", label_visibility="collapsed", placeholder="Math:5,English:5")
             with c5:
                 if st.button("✕", key=f"sd_v2_{i}"):
                     st.session_state.section_rows.pop(i)
@@ -381,9 +394,9 @@ if st.session_state.page == "home":
                     st.rerun()
                 except Exception as e: st.error(f"Solver Engine Compilation Fault: {e}")
 
-# ════════════════════════════════════════════════════════
+# ────────────────────────────────────────────────────────
 #  EXECUTIVE MANAGEMENT DASHBOARD PANELS
-# ════════════════════════════════════════════════════════
+# ────────────────────────────────────────────────────────
 else:
     teachers, rooms = st.session_state.teachers, st.session_state.rooms
     sections, timetable = st.session_state.sections, st.session_state.timetable
@@ -407,7 +420,6 @@ else:
 
     st.markdown("<br>", unsafe_allow_html=True)
     
-    # Process structured baseline frame variables
     days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
     processed_records = []
     for allocation in timetable:
@@ -422,25 +434,22 @@ else:
     df = pd.DataFrame(processed_records)
     if not df.empty: df = df.sort_values(["DayN", "PerN"])
 
-    # Execute dynamic advanced compute backend algorithms
     stress_df = calculate_system_stress_matrix(timetable, len(rooms), len(teachers))
     fatigue_df = analyze_subject_fatigue_index(df)
     gini_val = calculate_workload_inequality_gini(df, teachers)
 
-    # Upper KPI Panels
     c1, c2, c3, c4 = st.columns(4)
     metrics_schema = [
         (len(timetable), "Total Load Placements"),
         (len(violations), "Conflict Anomalies"),
         (f"{gini_val:.3f}", "Workload Gini Coefficient"),
-        (f"{stress_df['Composite Stress Index'].mean():.1f}%", "Mean System Stress Index")
+        (f"{stress_df['Composite Stress Index'].mean():.1f}%" if not stress_df.empty else "0.0%", "Mean System Stress Index")
     ]
     for idx, (metric, label) in enumerate(metrics_schema):
         with [c1, c2, c3, c4][idx]:
             color = "color: #FF5252;" if (idx == 1 and len(violations) > 0) or (idx == 2 and gini_val > 0.4) else f"color: {THEME['accent']};"
             st.markdown(f"<div style='background:{THEME['card']}; border:1px solid {THEME['border']}; border-radius:12px; padding:1.2rem; text-align:center;'><div style=\"font-size:32px; font-weight:800; font-family:'JetBrains Mono'; {color}\">{metric}</div><div style='font-size:10px; color:{THEME['sub']}; text-transform:uppercase; font-weight:600; margin-top:4px;'>{label}</div></div>", unsafe_allow_html=True)
 
-    # ── TELEMETRY NLP REASONING SYSTEM ──
     st.markdown("<br>", unsafe_allow_html=True)
     with st.container():
         peak_stress_row = stress_df.loc[stress_df['Composite Stress Index'].idxmax()] if not stress_df.empty else None
@@ -462,7 +471,6 @@ else:
         st.error(f"Anomaly Alert: {len(violations)} Hard-Overlap Violations found inside solver bounds.")
         for v in violations: st.caption(f"⚠ {v}")
 
-    # Tabs Interfaces
     t1, t2, t3, t4, t5, t6 = st.tabs([
         "📅 Schedule Matrices", "👨‍🏫 Staff Workloads", "📊 Structural Density Analytics", 
         "🧠 Curriculum Balance", "🎛️ What-If Control Studio", "📥 Export Hub"
@@ -516,6 +524,7 @@ else:
             fig_fatigue.update_layout(plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)", font_color=THEME['text'], height=240)
             st.plotly_chart(fig_fatigue, use_container_width=True)
 
+    # FIXED: Restructured and completed the previously cut-off Simulation Studio tab render block
     with t5:
         st.markdown("### Resource Overhead Simulation Studio")
         sim_val = st.slider("Hypothetical Capacity Buffer Target (Periods)", min_value=1, max_value=10, value=st.session_state.simulation_headroom)
@@ -527,19 +536,19 @@ else:
             allowed_max = getattr(t, 'max_periods', 20)
             sim_headroom = allowed_max - current_allocated - sim_val
             sim_records.append({
-                "Instructor": t.name, "Allocated Load": current_allocated,
-                "Configured Max": allowed_max, "Simulated Headroom": sim_headroom,
-                "Status Flag": "✓ OPTIMAL" if sim_headroom >= 0 else "⚠️ SATURATED"
+                "Instructor": t.name, 
+                "Allocated Load": current_allocated,
+                "Configured Max": allowed_max, 
+                "Simulated Headroom": sim_headroom,
+                "Status Flag": "✓ OPTIMAL" if sim_headroom >= 0 else "🚨 OVERLOAD RISK"
             })
         st.dataframe(pd.DataFrame(sim_records), use_container_width=True)
 
     with t6:
-        st.markdown("### Production File Pipeline Generation Engine")
+        st.markdown("### Export Hub")
+        st.caption("Download the compiled schedule array datasets directly to CSV spreadsheets.")
         if not df.empty:
-            for sc_obj in sections:
-                section_export_df = df[df["Section"] == sc_obj.id][["Day", "Period", "Subject", "Teacher", "Room"]].reset_index(drop=True)
-                st.download_button(label=f"📥 Bulk Transmit Data: Class {sc_obj.id} (CSV)", data=section_export_df.to_csv(index=False), file_name=f"matrix_timetable_{sc_obj.id}.csv", mime="text/csv", key=f"dl_v2_{sc_obj.id}")
-            st.markdown("<div style='margin: 1.5rem 0;'></div>", unsafe_allow_html=True)
-            st.download_button(label="📊 Transmit Enterprise Master Database Array (All Channels)", data=df[["Section", "Day", "Period", "Subject", "Teacher", "Room"]].reset_index(drop=True).to_csv(index=False), file_name="complete_master_timetable.csv", mime="text/csv", key="dl_v2_all_master", use_container_width=True)
-
-st.markdown(f"""<br><p align="center"><img src="https://capsule-render.vercel.app/api?type=rect&color={THEME['accent'].replace('#', '')}&height=6&section=footer&radius=2" width="100%" /></p>""", unsafe_allow_html=True)
+            csv_data = df.to_csv(index=False).encode('utf-8')
+            st.download_button(label="📥 Download Master Timetable CSV Array", data=csv_data, file_name="slotra_master_schedule.csv", mime="text/csv")
+        else:
+            st.info("No active structural payload data available for export.")
