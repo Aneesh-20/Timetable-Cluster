@@ -192,21 +192,21 @@ st.markdown(f"""
     .stApp {{background-color: {THEME['bg']}!important; color: {THEME['text']}!important; font-family: 'Inter', sans-serif;}}
     
     /* Top Left Glass Container Structural Placement rules */
-    .block-container {{padding: 7rem 3rem 3rem !important; max-width: 1400px; position: relative; z-index: 10;}}
+    .block-container {{padding: 8.5rem 3rem 3rem !important; max-width: 1400px; position: relative; z-index: 10;}}
     .grid-bg {{position:fixed; inset:0; pointer-events:none; z-index:1; background-image: linear-gradient({THEME['grid']} 1px, transparent 1px), linear-gradient(90deg, {THEME['grid']} 1px, transparent 1px); background-size: 32px 32px;}}
     
+    /* HIGH ACCENTUATED BORDER CONTAINER MATCHING ALL FOUR SIDES */
     .brand-header-layer {{
         position: fixed;
-        top: 45px;
-        left: 20px;
+        top: 24px;
+        left: 24px;
         z-index: 99999 !important;
-        padding: 10px 18px;
-        background: rgba(11, 14, 20, 0.75);
-        backdrop-filter: blur(16px);
-        -webkit-backdrop-filter: blur(16px);
-        border: 1px solid rgba(20, 168, 183, 0.25);
-        border-radius: 12px;
-        box-shadow: 0 12px 35px rgba(0,0,0,0.6);
+        padding: 12px 20px;
+        background: #0E131F !important;    /* Solidifies contrast color against the dead-black page background */
+        border: 2px solid #14A8B7 !important; /* Forces highly visible matching cyan frame across all four margins */
+        border-radius: 14px;
+        box-shadow: 0 10px 32px rgba(0, 0, 0, 0.85), 0 0 15px rgba(20, 168, 183, 0.2);
+        display: inline-block !important;
     }}
     .app-corner-logo {{
         display: block !important;
