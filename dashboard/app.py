@@ -75,7 +75,7 @@ def calculate_workload_inequality_gini(df_records, total_teachers_list):
     n = array.shape[0]
     return round(((np.sum((2 * index - n - 1) * array)) / (n * np.sum(array))), 3)
 
-# ── APP INITIALIZATION ─────────────────────────────────
+# ── APP INITIALIZATION & THEME CONFIGURATION ────────────
 st.set_page_config(page_title="Slotra", layout="wide", initial_sidebar_state="expanded")
 
 INITIAL_STATES = {
@@ -97,16 +97,50 @@ THEME = {
     "grid": "rgba(255,255,255,0.02)" if D else "rgba(0,0,0,0.025)"
 }
 
+# ── LOGO INJECTOR COMPONENT ──────────────────────────────
+logo_html = ""
+logo_path = "logo.png"  # Place your logo file in your main root project directory
+
+if os.path.exists(logo_path):
+    with open(logo_path, "rb") as f:
+        data = f.read()
+    encoded_logo = base64.b64encode(data).decode()
+    # Adjusted max-height to 75px and width to auto for a distinctly larger top-left presence
+    logo_html = f'<img src="data:image/png;base64,{encoded_logo}" class="top-left-logo" />'
+else:
+    # Text fallback branding layout if the logo asset path isn't discovered
+    logo_html = f'<div class="top-left-logo text-logo">⚡ SLOTRA</div>'
+
+# Main App Styling Layout
 st.markdown(f"""
 <style>
     .stApp {{background-color: {THEME['bg']}!important; color: {THEME['text']}!important; font-family: 'Inter', sans-serif;}}
     .block-container {{padding: 1rem 3rem 3rem !important; max-width: 1400px;}}
     .grid-bg {{position:fixed; inset:0; pointer-events:none; z-index:0; background-image: linear-gradient({THEME['grid']} 1px, transparent 1px), linear-gradient(90deg, {THEME['grid']} 1px, transparent 1px); background-size: 32px 32px;}}
+    
+    /* Absolute Positioning Core CSS logic for Logo Placement */
+    .top-left-logo {{
+        position: absolute;
+        top: 15px;
+        left: 25px;
+        z-index: 99999;
+        max-height: 75px;
+        width: auto;
+    }}
+    .text-logo {{
+        font-family: 'JetBrains Mono', monospace;
+        font-weight: 800;
+        font-size: 24px;
+        color: {THEME['accent']};
+        letter-spacing: -0.05em;
+    }}
+    
     div[data-testid="stFileUploader"] {{background-color: {THEME['card']}; border: 2px dashed {THEME['accent']}50!important; border-radius: 14px;}}
     div[data-testid="stButton"]>button[kind="primary"] {{ background: linear-gradient(135deg, {THEME['accent']} 0%, #0051B3 100%)!important; color: #FFFFFF!important; border: none!important; font-weight: 700!important; border-radius: 10px!important; width: 100%;}}
     .instructor-card {{background: {THEME['card']}; border: 1px solid {THEME['border']}; border-radius: 12px; padding: 1.2rem; margin-bottom: 1rem;}}
 </style>
 <div class="grid-bg"></div>
+{logo_html}
 """, unsafe_allow_html=True)
 
 # ── SIDEBAR SPATIAL INFRASTRUCTURE CONFIGURATOR ──────────
