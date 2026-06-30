@@ -90,66 +90,80 @@ D = st.session_state.dark_mode
 THEME = {
     "bg": "#0B0E14" if D else "#F5F7FA",
     "card": "rgba(22, 28, 45, 0.65)" if D else "rgba(255, 255, 255, 0.9)",
-    "accent": "#4FC3F7" if D else "#0070F3",
+    "accent": "#14A8B7" if D else "#0070F3",  # Deep slate teal variant from your sample image
+    "accent_neon": "#4FC3F7",
     "text": "#F3F4F6" if D else "#111827",
     "sub": "#9CA3AF" if D else "#4B5563",
-    "border": "rgba(79,195,247,0.18)" if D else "rgba(0,112,243,0.15)",
-    "grid": "rgba(255,255,255,0.02)" if D else "rgba(0,0,0,0.025)"
+    "border": "rgba(20,168,183,0.18)",
+    "grid": "rgba(255,255,255,0.02)"
 }
 
-# ── AUTOMATED VECTOR LOGO GENERATOR (PREMIUM MATRIX) ────
-# Inline SVG layout containing an optimized school scheduling block with high-tech typography
-premium_logo_svg = f"""
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 60" width="220" height="55">
-  <rect x="5" y="10" width="12" height="12" rx="2" fill="none" stroke="{THEME['accent']}" stroke-width="1.5" opacity="0.4"/>
-  <rect x="21" y="10" width="12" height="12" rx="2" fill="{THEME['accent']}" opacity="0.85"/>
-  <rect x="37" y="10" width="12" height="12" rx="2" fill="none" stroke="{THEME['accent']}" stroke-width="1.5" opacity="0.4"/>
-  
-  <rect x="5" y="26" width="12" height="12" rx="2" fill="{THEME['accent']}" opacity="0.9"/>
-  <rect x="21" y="26" width="12" height="12" rx="2" fill="none" stroke="{THEME['accent']}" stroke-width="1.5" opacity="0.2"/>
-  <rect x="37" y="26" width="12" height="12" rx="2" fill="none" stroke="{THEME['accent']}" stroke-width="1.5" opacity="0.4"/>
-  
-  <rect x="5" y="42" width="12" height="12" rx="2" fill="none" stroke="{THEME['accent']}" stroke-width="1.5" opacity="0.4"/>
-  <rect x="21" y="42" width="12" height="12" rx="2" fill="none" stroke="{THEME['accent']}" stroke-width="1.5" opacity="0.4"/>
-  <rect x="37" y="42" width="12" height="12" rx="2" fill="{THEME['accent']}" opacity="0.95"/>
-  
-  <path d="M 27 10 C 10 12, 10 32, 27 32 C 44 32, 44 52, 27 54" fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" filter="drop-shadow(0px 0px 3px {THEME['accent']})"/>
+# ── PREMIUM COMBINATORIAL EMBEDDED GRAPHIC LOGO ─────────
+# Hand-tailored clean typographic layout inspired by the uploaded sketch schematic logo
+premium_vector_logo = f"""
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 85" width="280" height="70">
+  <defs>
+    <filter id="premium-shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#000000" flood-opacity="0.6"/>
+    </filter>
+    <linearGradient id="gradient-accent" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0C5274" />
+      <stop offset="100%" stop-color="{THEME['accent']}" />
+    </linearGradient>
+  </defs>
 
-  <text x="62" y="36" font-family="'Inter', 'Montserrat', sans-serif" font-size="25" font-weight="800" fill="#FFFFFF" letter-spacing="2">SLOTRA</text>
-  <text x="63" y="49" font-family="'JetBrains Mono', monospace" font-size="7" font-weight="600" fill="{THEME['sub']}" letter-spacing="0.5">AUTOMATED ENGINE</text>
+  <g filter="url(#premium-shadow)">
+    <path d="M 46 12 C 18 12, 16 42, 38 44 C 60 46, 56 74, 28 74" fill="none" stroke="url(#gradient-accent)" stroke-width="6.5" stroke-linecap="round"/>
+    <path d="M 38 20 A 15 15 0 0 1 50 36" fill="none" stroke="{THEME['accent_neon']}" stroke-width="2.5" stroke-linecap="round" opacity="0.8"/>
+    
+    <rect x="25" y="48" width="24" height="18" rx="2" fill="rgba(12,82,116,0.3)" stroke="{THEME['accent']}" stroke-width="1.2" />
+    <line x1="33" y1="48" x2="33" y2="66" stroke="{THEME['accent']}" stroke-width="0.8" opacity="0.5"/>
+    <line x1="41" y1="48" x2="41" y2="66" stroke="{THEME['accent']}" stroke-width="0.8" opacity="0.5"/>
+    <line x1="25" y1="54" x2="49" y2="54" stroke="{THEME['accent']}" stroke-width="0.8" opacity="0.5"/>
+    <line x1="25" y1="60" x2="49" y2="60" stroke="{THEME['accent']}" stroke-width="0.8" opacity="0.5"/>
+    
+    <rect x="34" y="55" width="6" height="4" fill="{THEME['accent_neon']}" rx="0.5" />
+    <rect x="42" y="61" width="6" height="4" fill="#FFFFFF" rx="0.5" />
+  </g>
+
+  <g font-family="'Inter', 'Montserrat', sans-serif">
+    <text x="76" y="43" font-size="34" font-weight="900" fill="#FFFFFF" letter-spacing="4">SLOTR<tspan fill="{THEME['accent_neon']}">A</tspan></text>
+    <text x="78" y="62" font-family="'JetBrains Mono', monospace" font-size="8.5" font-weight="700" fill="{THEME['sub']}" letter-spacing="1.8">PLAN SMART. ACHIEVE MORE.</text>
+  </g>
 </svg>
 """
-b64_logo = base64.b64encode(premium_logo_svg.encode()).decode()
+b64_logo = base64.b64encode(premium_vector_logo.encode()).decode()
 logo_html = f'<div class="brand-header-layer"><img src="data:image/svg+xml;base64,{b64_logo}" class="app-corner-logo" /></div>'
 
 st.markdown(f"""
 <style>
     .stApp {{background-color: {THEME['bg']}!important; color: {THEME['text']}!important; font-family: 'Inter', sans-serif;}}
-    .block-container {{padding: 6rem 3rem 3rem !important; max-width: 1400px; position: relative; z-index: 10;}}
+    .block-container {{padding: 6.5rem 3rem 3rem !important; max-width: 1400px; position: relative; z-index: 10;}}
     .grid-bg {{position:fixed; inset:0; pointer-events:none; z-index:1; background-image: linear-gradient({THEME['grid']} 1px, transparent 1px), linear-gradient(90deg, {THEME['grid']} 1px, transparent 1px); background-size: 32px 32px;}}
     
-    /* Premium Glassmorphic Overlay Layer for Corner Brand Positioning */
+    /* Modern Glassmorphic Container Plate for the Premium Branding Vector Overlay */
     .brand-header-layer {{
         position: absolute;
         top: 20px;
         left: 35px;
         z-index: 999999 !important;
-        padding: 6px 14px 4px 10px;
-        background: rgba(14, 20, 32, 0.6);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        border: 1px solid rgba(79, 195, 247, 0.15);
-        border-radius: 12px;
+        padding: 8px 18px 4px 12px;
+        background: rgba(11, 14, 20, 0.7);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        border: 1px solid rgba(20, 168, 183, 0.2);
+        border-radius: 14px;
         display: block !important;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     }}
     .app-corner-logo {{
         display: block !important;
-        height: 48px !important;
+        height: 52px !important;
         width: auto !important;
     }}
     
     div[data-testid="stFileUploader"] {{background-color: {THEME['card']}; border: 2px dashed {THEME['accent']}50!important; border-radius: 14px;}}
-    div[data-testid="stButton"]>button[kind="primary"] {{ background: linear-gradient(135deg, {THEME['accent']} 0%, #0051B3 100%)!important; color: #FFFFFF!important; border: none!important; font-weight: 700!important; border-radius: 10px!important; width: 100%;}}
+    div[data-testid="stButton"]>button[kind="primary"] {{ background: linear-gradient(135deg, {THEME['accent']} 0%, #083B54 100%)!important; color: #FFFFFF!important; border: none!important; font-weight: 700!important; border-radius: 10px!important; width: 100%;}}
     .instructor-card {{background: {THEME['card']}; border: 1px solid {THEME['border']}; border-radius: 12px; padding: 1.2rem; margin-bottom: 1rem;}}
 </style>
 <div class="grid-bg"></div>
@@ -355,7 +369,7 @@ else:
     ]
     for idx, (m, lbl) in enumerate(metrics_schema):
         with [c1, c2, c3, c4][idx]:
-            st.markdown(f"<div style='background:{THEME['card']}; border:1px solid {THEME['border']}; border-radius:12px; padding:1.2rem; text-align:center;'><div style=\"font-size:32px; font-weight:800; color:{THEME['accent']};\">{m}</div><div style='font-size:10px; color:{THEME['sub']};'>{lbl}</div></div>", unsafe_allow_html=True)
+            st.markdown(f"<div style='background:{THEME['card']}; border:1px solid {THEME['border']}; border-radius:12px; padding:1.2rem; text-align:center;'><div style=\"font-size:32px; font-weight:800; color:{THEME['accent_neon']};\">{m}</div><div style='font-size:10px; color:{THEME['sub']};'>{lbl}</div></div>", unsafe_allow_html=True)
 
     st.markdown("<br>", unsafe_allow_html=True)
     t1, t2, t3 = st.tabs(["📅 Master Schedule Matrix Grid", "📊 Infrastructure Stress", "🧠 Curricular Distribution Health"])
