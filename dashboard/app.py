@@ -97,47 +97,55 @@ THEME = {
     "grid": "rgba(255,255,255,0.02)" if D else "rgba(0,0,0,0.025)"
 }
 
-# ── LOGO ASSET PARSER ────────────────────────────────────
-logo_html = ""
-logo_path = "slotra_logo.png"
+# ── AUTOMATED VECTOR LOGO GENERATOR (PREMIUM MATRIX) ────
+# Inline SVG layout containing an optimized school scheduling block with high-tech typography
+premium_logo_svg = f"""
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 60" width="220" height="55">
+  <rect x="5" y="10" width="12" height="12" rx="2" fill="none" stroke="{THEME['accent']}" stroke-width="1.5" opacity="0.4"/>
+  <rect x="21" y="10" width="12" height="12" rx="2" fill="{THEME['accent']}" opacity="0.85"/>
+  <rect x="37" y="10" width="12" height="12" rx="2" fill="none" stroke="{THEME['accent']}" stroke-width="1.5" opacity="0.4"/>
+  
+  <rect x="5" y="26" width="12" height="12" rx="2" fill="{THEME['accent']}" opacity="0.9"/>
+  <rect x="21" y="26" width="12" height="12" rx="2" fill="none" stroke="{THEME['accent']}" stroke-width="1.5" opacity="0.2"/>
+  <rect x="37" y="26" width="12" height="12" rx="2" fill="none" stroke="{THEME['accent']}" stroke-width="1.5" opacity="0.4"/>
+  
+  <rect x="5" y="42" width="12" height="12" rx="2" fill="none" stroke="{THEME['accent']}" stroke-width="1.5" opacity="0.4"/>
+  <rect x="21" y="42" width="12" height="12" rx="2" fill="none" stroke="{THEME['accent']}" stroke-width="1.5" opacity="0.4"/>
+  <rect x="37" y="42" width="12" height="12" rx="2" fill="{THEME['accent']}" opacity="0.95"/>
+  
+  <path d="M 27 10 C 10 12, 10 32, 27 32 C 44 32, 44 52, 27 54" fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" filter="drop-shadow(0px 0px 3px {THEME['accent']})"/>
 
-if os.path.exists(logo_path):
-    with open(logo_path, "rb") as f:
-        data = f.read()
-    encoded_logo = base64.b64encode(data).decode()
-    # Using fixed coordinates + high z-index + visibility overrides to force display above Streamlit canvases
-    logo_html = f'<div class="brand-header-layer"><img src="data:image/png;base64,{encoded_logo}" class="app-corner-logo" /></div>'
-else:
-    logo_html = f'<div class="brand-header-layer"><div class="app-corner-logo text-fallback">⚡ SLOTRA</div></div>'
+  <text x="62" y="36" font-family="'Inter', 'Montserrat', sans-serif" font-size="25" font-weight="800" fill="#FFFFFF" letter-spacing="2">SLOTRA</text>
+  <text x="63" y="49" font-family="'JetBrains Mono', monospace" font-size="7" font-weight="600" fill="{THEME['sub']}" letter-spacing="0.5">AUTOMATED ENGINE</text>
+</svg>
+"""
+b64_logo = base64.b64encode(premium_logo_svg.encode()).decode()
+logo_html = f'<div class="brand-header-layer"><img src="data:image/svg+xml;base64,{b64_logo}" class="app-corner-logo" /></div>'
 
 st.markdown(f"""
 <style>
     .stApp {{background-color: {THEME['bg']}!important; color: {THEME['text']}!important; font-family: 'Inter', sans-serif;}}
-    .block-container {{padding: 5rem 3rem 3rem !important; max-width: 1400px; position: relative; z-index: 10;}}
+    .block-container {{padding: 6rem 3rem 3rem !important; max-width: 1400px; position: relative; z-index: 10;}}
     .grid-bg {{position:fixed; inset:0; pointer-events:none; z-index:1; background-image: linear-gradient({THEME['grid']} 1px, transparent 1px), linear-gradient(90deg, {THEME['grid']} 1px, transparent 1px); background-size: 32px 32px;}}
     
-    /* Strict global layout branding positions */
+    /* Premium Glassmorphic Overlay Layer for Corner Brand Positioning */
     .brand-header-layer {{
         position: absolute;
-        top: 25px;
-        left: 40px;
+        top: 20px;
+        left: 35px;
         z-index: 999999 !important;
+        padding: 6px 14px 4px 10px;
+        background: rgba(14, 20, 32, 0.6);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(79, 195, 247, 0.15);
+        border-radius: 12px;
         display: block !important;
-        visibility: visible !important;
-        opacity: 1 !important;
     }}
     .app-corner-logo {{
-        height: 60px !important;
+        display: block !important;
+        height: 48px !important;
         width: auto !important;
-        max-width: 250px !important;
-        object-fit: contain;
-    }}
-    .text-fallback {{
-        font-family: 'JetBrains Mono', monospace;
-        font-weight: 800;
-        font-size: 26px;
-        color: {THEME['accent']};
-        letter-spacing: -0.05em;
     }}
     
     div[data-testid="stFileUploader"] {{background-color: {THEME['card']}; border: 2px dashed {THEME['accent']}50!important; border-radius: 14px;}}
@@ -189,7 +197,7 @@ with st.sidebar:
 
 # ── MAIN PANEL INTERFACE ─────────────────────────────────
 if st.session_state.page == "home":
-    st.markdown("<div style='text-align:center; padding: 1.5rem 0;'><h1 style='font-size: 50px; font-weight: 800; font-family:\"JetBrains Mono\";'>SLOTRA</h1><p style='color:#4FC3F7; text-transform:uppercase; letter-spacing:0.1em;'>Automated Infrastructure Scheduler</p></div>", unsafe_allow_html=True)
+    st.markdown("<div style='text-align:center; padding: 1.5rem 0;'><h1 style='font-size: 50px; font-weight: 800; font-family:\"JetBrains Mono\"; visibility: hidden;'>SLOTRA</h1></div>", unsafe_allow_html=True)
 
     _, center_panel, _ = st.columns([1, 2, 1])
     with center_panel:
