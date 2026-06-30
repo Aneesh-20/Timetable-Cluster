@@ -81,7 +81,8 @@ st.set_page_config(page_title="Slotra", layout="wide", initial_sidebar_state="ex
 INITIAL_STATES = {
     "timetable": None, "violations": [], "dark_mode": True, "page": "home",
     "teachers": [], "simulation_headroom": 3, "input_mode": "excel",
-    "manual_instructors": [{"name": "Mr. Kumar", "subjects": "Math,Physics", "max_days": 5, "max_periods": 22, "exclusions": "0:1, 4:7"}]
+    # All baseline starter arrays are completely empty now to remove any dummy text traces
+    "manual_instructors": [{"name": "", "subjects": "", "max_days": 5, "max_periods": 20, "exclusions": ""}]
 }
 for key, val in INITIAL_STATES.items():
     if key not in st.session_state: st.session_state[key] = val
@@ -99,26 +100,22 @@ THEME = {
 
 # ── LOGO INJECTOR COMPONENT ──────────────────────────────
 logo_html = ""
-logo_path = "logo.png"  # Place your logo file in your main root project directory
+logo_path = "slotra_logo.png"
 
 if os.path.exists(logo_path):
     with open(logo_path, "rb") as f:
         data = f.read()
     encoded_logo = base64.b64encode(data).decode()
-    # Adjusted max-height to 75px and width to auto for a distinctly larger top-left presence
     logo_html = f'<img src="data:image/png;base64,{encoded_logo}" class="top-left-logo" />'
 else:
-    # Text fallback branding layout if the logo asset path isn't discovered
     logo_html = f'<div class="top-left-logo text-logo">⚡ SLOTRA</div>'
 
-# Main App Styling Layout
 st.markdown(f"""
 <style>
     .stApp {{background-color: {THEME['bg']}!important; color: {THEME['text']}!important; font-family: 'Inter', sans-serif;}}
     .block-container {{padding: 1rem 3rem 3rem !important; max-width: 1400px;}}
     .grid-bg {{position:fixed; inset:0; pointer-events:none; z-index:0; background-image: linear-gradient({THEME['grid']} 1px, transparent 1px), linear-gradient(90deg, {THEME['grid']} 1px, transparent 1px); background-size: 32px 32px;}}
     
-    /* Absolute Positioning Core CSS logic for Logo Placement */
     .top-left-logo {{
         position: absolute;
         top: 15px;
@@ -188,7 +185,6 @@ if st.session_state.page == "home":
 
     _, center_panel, _ = st.columns([1, 2, 1])
     with center_panel:
-        # Strategy Picker Row
         mode_col1, mode_col2 = st.columns(2)
         with mode_col1:
             if st.button("📁 Use Excel/CSV Upload", use_container_width=True, type="secondary" if st.session_state.input_mode == "manual" else "primary"):
@@ -240,9 +236,9 @@ if st.session_state.page == "home":
                 
                 c_name, c_sub = st.columns([2, 2])
                 with c_name:
-                    name_val = st.text_input("Instructor Name", value=entry["name"], key=f"mname_{idx}")
+                    name_val = st.text_input("Instructor Name", value=entry["name"], key=f"mname_{idx}", placeholder="e.g. Mr. Kumar")
                 with c_sub:
-                    sub_val = st.text_input("Subjects (Comma Separated)", value=entry["subjects"], key=f"msub_{idx}")
+                    sub_val = st.text_input("Subjects (Comma Separated)", value=entry["subjects"], key=f"msub_{idx}", placeholder="e.g. Math,Physics")
                 
                 c_d, c_p, c_ex, c_del = st.columns([1, 1, 2, 0.5])
                 with c_d:
@@ -250,7 +246,7 @@ if st.session_state.page == "home":
                 with c_p:
                     per_val = st.number_input("Max Periods", min_value=1, max_value=40, value=entry["max_periods"], key=f"mper_{idx}")
                 with c_ex:
-                    ex_val = st.text_input("Exclusions (Day:Slot)", value=entry["exclusions"], key=f"mex_{idx}")
+                    ex_val = st.text_input("Exclusions (Day:Slot)", value=entry["exclusions"], key=f"mex_{idx}", placeholder="e.g. 0:1, 4:7")
                 with c_del:
                     st.markdown("<br>", unsafe_allow_html=True)
                     if st.button("❌", key=f"mdel_{idx}"):
@@ -258,7 +254,6 @@ if st.session_state.page == "home":
                         st.rerun()
                 st.markdown("</div>", unsafe_allow_html=True)
                 
-                # Update current structure
                 st.session_state.manual_instructors[idx] = {
                     "name": name_val, "subjects": sub_val, "max_days": days_val, "max_periods": per_val, "exclusions": ex_val
                 }
@@ -267,7 +262,6 @@ if st.session_state.page == "home":
                 st.session_state.manual_instructors.append({"name": "", "subjects": "", "max_days": 5, "max_periods": 20, "exclusions": ""})
                 st.rerun()
 
-            # Map current structural inputs into core system items
             for idx, entry in enumerate(st.session_state.manual_instructors):
                 if entry["name"].strip() == "": continue
                 subjs = [s.strip() for s in entry["subjects"].split(",") if s.strip()]
@@ -336,7 +330,6 @@ else:
     fatigue_df = analyze_subject_fatigue_index(df)
     gini_val = calculate_workload_inequality_gini(df, teachers)
 
-    # Rendering Metrics Display Cards
     c1, c2, c3, c4 = st.columns(4)
     metrics_schema = [
         (len(timetable), "Total Placed Classes"),
