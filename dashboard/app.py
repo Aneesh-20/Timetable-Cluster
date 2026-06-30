@@ -97,7 +97,7 @@ THEME = {
     "grid": "rgba(255,255,255,0.02)" if D else "rgba(0,0,0,0.025)"
 }
 
-# ── LOGO INJECTOR COMPONENT ──────────────────────────────
+# ── LOGO ASSET PARSER ────────────────────────────────────
 logo_html = ""
 logo_path = "slotra_logo.png"
 
@@ -105,30 +105,34 @@ if os.path.exists(logo_path):
     with open(logo_path, "rb") as f:
         data = f.read()
     encoded_logo = base64.b64encode(data).decode()
-    logo_html = f'<div class="logo-container"><img src="data:image/png;base64,{encoded_logo}" class="top-left-logo" /></div>'
+    # Using fixed coordinates + high z-index + visibility overrides to force display above Streamlit canvases
+    logo_html = f'<div class="brand-header-layer"><img src="data:image/png;base64,{encoded_logo}" class="app-corner-logo" /></div>'
 else:
-    logo_html = f'<div class="logo-container"><div class="top-left-logo text-logo">⚡ SLOTRA</div></div>'
+    logo_html = f'<div class="brand-header-layer"><div class="app-corner-logo text-fallback">⚡ SLOTRA</div></div>'
 
 st.markdown(f"""
 <style>
     .stApp {{background-color: {THEME['bg']}!important; color: {THEME['text']}!important; font-family: 'Inter', sans-serif;}}
-    .block-container {{padding: 4rem 3rem 3rem !important; max-width: 1400px; position: relative;}}
-    .grid-bg {{position:fixed; inset:0; pointer-events:none; z-index:0; background-image: linear-gradient({THEME['grid']} 1px, transparent 1px), linear-gradient(90deg, {THEME['grid']} 1px, transparent 1px); background-size: 32px 32px;}}
+    .block-container {{padding: 5rem 3rem 3rem !important; max-width: 1400px; position: relative; z-index: 10;}}
+    .grid-bg {{position:fixed; inset:0; pointer-events:none; z-index:1; background-image: linear-gradient({THEME['grid']} 1px, transparent 1px), linear-gradient(90deg, {THEME['grid']} 1px, transparent 1px); background-size: 32px 32px;}}
     
-    /* Fixed viewport placement configuration to override Streamlit structural canvas layers */
-    .logo-container {{
-        position: fixed;
-        top: 20px;
-        left: 30px;
-        z-index: 999999;
-        pointer-events: none;
+    /* Strict global layout branding positions */
+    .brand-header-layer {{
+        position: absolute;
+        top: 25px;
+        left: 40px;
+        z-index: 999999 !important;
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
     }}
-    .top-left-logo {{
-        height: 55px;
-        width: auto;
-        display: block;
+    .app-corner-logo {{
+        height: 60px !important;
+        width: auto !important;
+        max-width: 250px !important;
+        object-fit: contain;
     }}
-    .text-logo {{
+    .text-fallback {{
         font-family: 'JetBrains Mono', monospace;
         font-weight: 800;
         font-size: 26px;
