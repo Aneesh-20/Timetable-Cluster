@@ -81,7 +81,6 @@ st.set_page_config(page_title="Slotra", layout="wide", initial_sidebar_state="ex
 INITIAL_STATES = {
     "timetable": None, "violations": [], "dark_mode": True, "page": "home",
     "teachers": [], "simulation_headroom": 3, "input_mode": "excel",
-    # All baseline starter arrays are completely empty now to remove any dummy text traces
     "manual_instructors": [{"name": "", "subjects": "", "max_days": 5, "max_periods": 20, "exclusions": ""}]
 }
 for key, val in INITIAL_STATES.items():
@@ -106,28 +105,33 @@ if os.path.exists(logo_path):
     with open(logo_path, "rb") as f:
         data = f.read()
     encoded_logo = base64.b64encode(data).decode()
-    logo_html = f'<img src="data:image/png;base64,{encoded_logo}" class="top-left-logo" />'
+    logo_html = f'<div class="logo-container"><img src="data:image/png;base64,{encoded_logo}" class="top-left-logo" /></div>'
 else:
-    logo_html = f'<div class="top-left-logo text-logo">⚡ SLOTRA</div>'
+    logo_html = f'<div class="logo-container"><div class="top-left-logo text-logo">⚡ SLOTRA</div></div>'
 
 st.markdown(f"""
 <style>
     .stApp {{background-color: {THEME['bg']}!important; color: {THEME['text']}!important; font-family: 'Inter', sans-serif;}}
-    .block-container {{padding: 1rem 3rem 3rem !important; max-width: 1400px;}}
+    .block-container {{padding: 4rem 3rem 3rem !important; max-width: 1400px; position: relative;}}
     .grid-bg {{position:fixed; inset:0; pointer-events:none; z-index:0; background-image: linear-gradient({THEME['grid']} 1px, transparent 1px), linear-gradient(90deg, {THEME['grid']} 1px, transparent 1px); background-size: 32px 32px;}}
     
+    /* Fixed viewport placement configuration to override Streamlit structural canvas layers */
+    .logo-container {{
+        position: fixed;
+        top: 20px;
+        left: 30px;
+        z-index: 999999;
+        pointer-events: none;
+    }}
     .top-left-logo {{
-        position: absolute;
-        top: 15px;
-        left: 25px;
-        z-index: 99999;
-        max-height: 75px;
+        height: 55px;
         width: auto;
+        display: block;
     }}
     .text-logo {{
         font-family: 'JetBrains Mono', monospace;
         font-weight: 800;
-        font-size: 24px;
+        font-size: 26px;
         color: {THEME['accent']};
         letter-spacing: -0.05em;
     }}
