@@ -108,7 +108,6 @@ if os.path.exists(logo_filename):
     with open(logo_filename, "rb") as image_file:
         logo_src = f"data:image/png;base64,{base64.b64encode(image_file.read()).decode()}"
 else:
-    # High-fidelity SVG backup layer if local asset pipeline drops out
     fallback_svg = f"""
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
         <rect width="100" height="100" fill="#0E131F" rx="14"/>
@@ -162,46 +161,34 @@ if not st.session_state.splash_done:
     splash_window.empty()
     st.rerun()
 
-# ── WEB APPLICATION INTERFACE CORE LAYOUT ────────────────
-logo_html = f"""
-<div class="brand-header-layer">
-    <img src="{logo_src}" class="app-corner-logo" />
-    <div class="brand-text-zone">
-        <div class="brand-title">SLOTRA</div>
-        <div class="brand-tagline">PLAN SMART. ACHIEVE MORE.</div>
-    </div>
-</div>
-"""
-
+# ── GLOBALLY INJECTED APPLICATION LOOK & FEEL Styles ─────
 st.markdown(f"""
 <style>
     .stApp {{background-color: {THEME['bg']}!important; color: {THEME['text']}!important; font-family: 'Inter', sans-serif;}}
     
-    /* Grid Background and Core Layout Offset */
-    .block-container {{padding: 9.5rem 3rem 3rem !important; max-width: 1400px; position: relative; z-index: 10;}}
+    /* Document Flow Structuring */
+    .block-container {{padding: 4rem 3rem 3rem !important; max-width: 1400px; position: relative; z-index: 10;}}
     .grid-bg {{position:fixed; inset:0; pointer-events:none; z-index:1; background-image: linear-gradient({THEME['grid']} 1px, transparent 1px), linear-gradient(90deg, {THEME['grid']} 1px, transparent 1px); background-size: 32px 32px;}}
     
-    /* PREMIUM 4-SIDED VISIBLE NEON BORDER LAYOUT CONTROLLER */
-    .brand-header-layer {{
-        position: fixed;
-        top: 24px;
-        left: 24px;
-        z-index: 999999 !important;
-        padding: 10px 20px 10px 14px;
-        background: #0E131F !important;
-        border: 2px solid {THEME['accent']} !important;    /* Highly visible neon framing around all 4 sides */
-        border-radius: 14px;
-        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.85), 0 0 20px rgba(20, 168, 183, 0.25);
+    /* IN-LINE CENTERED EMBEDDED FOUR-SIDED NEON BRANDING WRAPPER */
+    .brand-header-center-layer {{
         display: flex !important;
         align-items: center !important;
-        gap: 14px !important;
-        min-width: 290px;
+        justify-content: center !important;
+        gap: 18px !important;
+        margin: 0 auto 2.5rem auto !important;
+        padding: 14px 28px !important;
+        background: #0E131F !important;
+        border: 2px solid {THEME['accent']} !important;    /* Absolute, uninterrupted framing border on all 4 directions */
+        border-radius: 16px;
+        box-shadow: 0 16px 45px rgba(0, 0, 0, 0.85), 0 0 25px rgba(20, 168, 183, 0.25);
+        max-width: fit-content !important;
     }}
     
     .app-corner-logo {{
         display: block !important;
-        height: 46px !important;
-        width: 46px !important;
+        height: 52px !important;
+        width: 52px !important;
         object-fit: cover !important;
         border-radius: 8px;
     }}
@@ -214,18 +201,18 @@ st.markdown(f"""
     .brand-title {{
         color: #FFFFFF !important;
         font-family: 'Inter', system-ui, sans-serif !important;
-        font-size: 24px !important;
+        font-size: 28px !important;
         font-weight: 900 !important;
-        letter-spacing: 3px !important;
+        letter-spacing: 4px !important;
         line-height: 1.1 !important;
     }}
     .brand-tagline {{
         color: {THEME['sub']} !important;
         font-family: monospace !important;
-        font-size: 8px !important;
+        font-size: 9px !important;
         font-weight: 700 !important;
-        letter-spacing: 1px !important;
-        margin-top: 2px !important;
+        letter-spacing: 1.2px !important;
+        margin-top: 3px !important;
     }}
     
     div[data-testid="stFileUploader"] {{background-color: {THEME['card']}; border: 2px dashed {THEME['accent']}50!important; border-radius: 14px;}}
@@ -233,12 +220,11 @@ st.markdown(f"""
     .instructor-card {{background: {THEME['card']}; border: 1px solid {THEME['border']}; border-radius: 12px; padding: 1.2rem; margin-bottom: 1rem;}}
 </style>
 <div class="grid-bg"></div>
-{logo_html}
 """, unsafe_allow_html=True)
 
 # ── SIDEBAR SPATIAL INFRASTRUCTURE CONFIGURATOR ──────────
 with st.sidebar:
-    st.markdown("<div style='height: 50px;'></div>", unsafe_allow_html=True)
+    st.markdown("<div style='height: 20px;'></div>", unsafe_allow_html=True)
     st.markdown("### 🎛️ Spatial & Cohort Setup")
     
     st.markdown("#### 🏫 Rooms / Classrooms")
@@ -278,10 +264,20 @@ with st.sidebar:
 
 # ── MAIN PANEL INTERFACE ─────────────────────────────────
 if st.session_state.page == "home":
-    st.markdown("<div style='text-align:center; padding: 1.5rem 0;'><h1 style='font-size: 50px; font-weight: 800; font-family:\"JetBrains Mono\"; visibility: hidden;'>SLOTRA</h1></div>", unsafe_allow_html=True)
-
     _, center_panel, _ = st.columns([1, 2, 1])
     with center_panel:
+        
+        # ── LOGO PLACED EXACTLY HERE AT CENTER ABOVE INTERACTION MODES ──
+        st.markdown(f"""
+        <div class="brand-header-center-layer">
+            <img src="{logo_src}" class="app-corner-logo" />
+            <div class="brand-text-zone">
+                <div class="brand-title">SLOTRA</div>
+                <div class="brand-tagline">PLAN SMART. ACHIEVE MORE.</div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+
         mode_col1, mode_col2 = st.columns(2)
         with mode_col1:
             if st.button("📁 Use Excel/CSV Upload", use_container_width=True, type="secondary" if st.session_state.input_mode == "manual" else "primary"):
