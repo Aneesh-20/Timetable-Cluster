@@ -124,7 +124,6 @@ premium_vector_logo = f"""
 </svg>
 """
 b64_logo = base64.b64encode(premium_vector_logo.encode()).decode()
-logo_html = f'<div class="brand-header-layer"><img src="data:image/svg+xml;base64,{b64_logo}" class="app-logo" /></div>'
 
 st.markdown(f"""
 <style>
@@ -132,13 +131,16 @@ st.markdown(f"""
     .block-container {{padding: 2rem 3rem 3rem !important; max-width: 1400px;}}
     .grid-bg {{position:fixed; inset:0; pointer-events:none; z-index:1; background-image: linear-gradient({THEME['grid']} 1px, transparent 1px), linear-gradient(90deg, {THEME['grid']} 1px, transparent 1px); background-size: 32px 32px;}}
     
-    /* Centered Header Logic */
-    .brand-header-layer {{
+    /* Centered Flexbox Header Logic */
+    .brand-header-wrapper {{
         display: flex !important;
         justify-content: center !important;
         align-items: center !important;
         width: 100%;
+        margin-top: 1rem;
         margin-bottom: 2rem;
+        position: relative;
+        z-index: 100;
     }}
     .app-logo {{
         height: 70px !important; 
@@ -150,7 +152,9 @@ st.markdown(f"""
     .instructor-card {{background: {THEME['card']}; border: 1px solid {THEME['border']}; border-radius: 12px; padding: 1.2rem; margin-bottom: 1rem;}}
 </style>
 <div class="grid-bg"></div>
-{logo_html}
+<div class="brand-header-wrapper">
+    <img src="data:image/svg+xml;base64,{b64_logo}" class="app-logo" />
+</div>
 """, unsafe_allow_html=True)
 
 # ── SIDEBAR SPATIAL INFRASTRUCTURE CONFIGURATOR ──────────
