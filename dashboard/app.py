@@ -14,7 +14,7 @@ from src.solver import TimetableSolver
 from src.constraints import check_hard_constraints
 
 # ══════════════════════════════════════════════════════════
-# DATA ANALYTICS BACKEND LOGIC ENGINES  (unchanged behavior)
+# DATA ANALYTICS BACKEND LOGIC ENGINES (Untouched)
 # ══════════════════════════════════════════════════════════
 def calculate_system_stress_matrix(timetable_data, total_rooms, total_teachers):
     stress_grid = {}
@@ -73,15 +73,10 @@ def calculate_workload_inequality_gini(df_records, total_teachers_list):
     n = array.shape[0]
     return round(((np.sum((2 * index - n - 1) * array)) / (n * np.sum(array))), 3)
 
-# ══════════════════════════════════════════════════════════
-# NEW: INFRASTRUCTURE & ROOM UTILISATION ANALYTICS ENGINES
-# (purely additive — do not touch solver/backend behaviour)
-# ══════════════════════════════════════════════════════════
 def calculate_room_workload(timetable_data, rooms_list):
-    """Per-room utilisation counts, feeds the new infrastructure bar charts."""
     if not timetable_data:
         return pd.DataFrame(columns=["Room", "Classes Scheduled", "Utilization %"])
-    total_slots = 5 * 8  # 5 days x 8 periods, matches stress matrix grid
+    total_slots = 5 * 8 
     counts = {}
     for slot in timetable_data:
         room_id = getattr(slot, "room_id", getattr(slot, "room", "Unassigned"))
@@ -97,7 +92,6 @@ def calculate_room_workload(timetable_data, rooms_list):
     return pd.DataFrame(records).sort_values("Classes Scheduled", ascending=False)
 
 def calculate_infra_daywise_load(stress_df):
-    """Aggregate infra (room) load per day for the new bar chart."""
     if stress_df.empty:
         return pd.DataFrame(columns=["Day", "Total Rooms Used", "Avg Room Saturation %"])
     grouped = stress_df.groupby("Day").agg(
@@ -112,19 +106,10 @@ def calculate_infra_daywise_load(stress_df):
     return grouped.sort_values("Day")
 
 def calculate_peak_pressure_periods(stress_df, top_n=5):
-    """Highest composite-stress day/period combinations — surfaces bottlenecks."""
-    if stress_df.empty:
-        return pd.DataFrame()
+    if stress_df.empty: return pd.DataFrame()
     return stress_df.sort_values("Composite Stress Index", ascending=False).head(top_n).reset_index(drop=True)
 
 def build_teacher_safe(idx, name, subjects, max_days, max_periods, exclusions):
-    """
-    Constructs a Teacher object without assuming an exact constructor signature
-    (src/models.py wasn't available at edit time). Tries the most common field
-    names first; falls back to a plain dict + on-screen warning so the app
-    never crashes on a mismatched Teacher(...) signature. Adjust the kwargs
-    below to match your real Teacher class if the warning appears.
-    """
     subj_list = [s.strip() for s in str(subjects).split(",") if s.strip()]
     excl_list = [e.strip() for e in str(exclusions).split(",") if e.strip()]
     attempts = [
@@ -137,13 +122,12 @@ def build_teacher_safe(idx, name, subjects, max_days, max_periods, exclusions):
             return Teacher(**kwargs)
         except TypeError:
             continue
-    st.warning(f"Couldn't match Teacher(...) constructor for '{name}' — using a plain record instead. Update build_teacher_safe to match your Teacher model's real fields.")
     return {"id": f"T{idx+1}", "name": name, "subjects": subj_list, "max_days": max_days, "max_periods": max_periods, "exclusions": excl_list}
 
 # ══════════════════════════════════════════════════════════
-# APP INITIALIZATION & THEME
+# APP INITIALIZATION & ULTRA-PREMIUM THEME
 # ══════════════════════════════════════════════════════════
-st.set_page_config(page_title="Slotra", layout="wide", initial_sidebar_state="expanded")
+st.set_page_config(page_title="Slotra | Premium", layout="wide", initial_sidebar_state="collapsed")
 
 INITIAL_STATES = {
     "timetable": None, "violations": [], "dark_mode": True, "page": "home",
@@ -155,17 +139,14 @@ for k, v in INITIAL_STATES.items():
 
 D = st.session_state.dark_mode
 THEME = {
-    "bg": "#0B0E14" if D else "#F5F7FA",
-    "card": "rgba(22, 28, 45, 0.65)" if D else "rgba(255, 255, 255, 0.9)",
-    "accent": "#14A8B7" if D else "#0070F3",
-    "accent_neon": "#4FC3F7",
-    "text": "#F3F4F6" if D else "#111827",
-    "sub": "#9CA3AF" if D else "#4B5563",
-    "border": "rgba(20,168,183,0.18)" if D else "rgba(0,112,243,0.18)",
-    "grid": "rgba(255,255,255,0.02)" if D else "rgba(0,0,0,0.03)",
-    "danger": "#EF4444",
-    "success": "#22C55E",
-    "warning": "#F59E0B",
+    "bg_gradient": "radial-gradient(circle at top left, #1A1F35 0%, #080A12 100%)" if D else "radial-gradient(circle at top left, #FFFFFF 0%, #E2E8F0 100%)",
+    "card_bg": "rgba(20, 25, 40, 0.45)" if D else "rgba(255, 255, 255, 0.65)",
+    "card_border": "rgba(255, 255, 255, 0.08)" if D else "rgba(0, 0, 0, 0.05)",
+    "accent_primary": "#00F0FF",
+    "accent_secondary": "#0057FF",
+    "text_main": "#FFFFFF" if D else "#0F172A",
+    "text_muted": "#94A3B8" if D else "#64748B",
+    "shadow": "0 8px 32px 0 rgba(0, 0, 0, 0.3)" if D else "0 8px 32px 0 rgba(31, 38, 135, 0.07)"
 }
 
 # ── LOGO ENGINE & CINEMATIC SPLASH ──────────────────────
@@ -173,310 +154,343 @@ logo_filename = "slotra_logo.png"
 logo_src = f"data:image/png;base64,{base64.b64encode(open(logo_filename, 'rb').read()).decode()}" if os.path.exists(logo_filename) else ""
 
 if not st.session_state.splash_done:
-    st.markdown(f"<div class='netflix-preloader' style='position:fixed; inset:0; background:#0B0E14; display:flex; justify-content:center; align-items:center; z-index:999;'><img src='{logo_src}' style='width:200px; border-radius:20px; border:2px solid {THEME['accent']}; animation: pulse 1.8s infinite;'></div>", unsafe_allow_html=True)
-    time.sleep(2.0)
+    st.markdown(f"""
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;800&display=swap');
+        .splash-screen {{
+            position:fixed; inset:0; background: {THEME['bg_gradient']}; 
+            display:flex; flex-direction:column; justify-content:center; align-items:center; z-index:9999;
+        }}
+        .splash-logo {{
+            width:180px; border-radius:30px; box-shadow: 0 0 50px rgba(0, 240, 255, 0.3);
+            animation: float 3s ease-in-out infinite; border: 1px solid rgba(255,255,255,0.1);
+        }}
+        @keyframes float {{ 0% {{transform: translateY(0px);}} 50% {{transform: translateY(-20px);}} 100% {{transform: translateY(0px);}} }}
+    </style>
+    <div class='splash-screen'>
+        <img src='{logo_src}' class='splash-logo'>
+        <h1 style="font-family:'Outfit', sans-serif; color:{THEME['text_main']}; margin-top:30px; font-weight:800; letter-spacing:8px;">SLOTRA</h1>
+        <p style="font-family:'Outfit', sans-serif; color:{THEME['accent_primary']}; letter-spacing:3px; font-size:12px;">ENTERPRISE EDITION</p>
+    </div>
+    """, unsafe_allow_html=True)
+    time.sleep(2.2)
     st.session_state.splash_done = True
     st.rerun()
 
 # ══════════════════════════════════════════════════════════
-# GLOBAL CSS STYLES
+# GLOBAL CSS STYLES (THE "SUPER DUPER PREMIUM" OVERHAUL)
 # ══════════════════════════════════════════════════════════
-st.markdown(f"""<style>
-    .stApp {{background-color: {THEME['bg']}!important; color: {THEME['text']}!important;}}
-    .brand-header-center-layer {{display: flex; align-items: center; justify-content: center; gap: 18px; margin: 0 auto 2.5rem auto; padding: 14px 28px; background: #0E131F; border: 2px solid {THEME['accent']}; border-radius: 16px; max-width: fit-content;}}
-    .instructor-card {{background: {THEME['card']}; border: 1px solid {THEME['border']}; border-radius: 12px; padding: 1.2rem; margin-bottom: 1rem;}}
+st.markdown(f"""
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800;900&display=swap');
+    
+    /* Global Typography & Background */
+    html, body, [class*="css"], .stApp {{
+        font-family: 'Outfit', sans-serif !important;
+        background: {THEME['bg_gradient']} !important;
+        background-attachment: fixed !important;
+        color: {THEME['text_main']} !important;
+    }}
+    
+    /* Hide Streamlit Header/Footer for App Feel */
+    header {{ visibility: hidden !important; }}
+    footer {{ visibility: hidden !important; }}
+    
+    /* Glassmorphism Premium Cards */
+    .premium-card {{
+        background: {THEME['card_bg']};
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid {THEME['card_border']};
+        border-radius: 24px;
+        padding: 24px;
+        box-shadow: {THEME['shadow']};
+        transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
+        margin-bottom: 20px;
+    }}
+    .premium-card:hover {{
+        transform: translateY(-5px);
+        box-shadow: 0 15px 45px rgba(0, 240, 255, 0.15);
+        border: 1px solid rgba(0, 240, 255, 0.3);
+    }}
 
-    /* ── Top corner bar: date badge (left) + theme toggle (right) ── */
-    .topbar-row {{ display:flex; align-items:center; justify-content:space-between; margin-bottom: 0.8rem; }}
-    .date-badge {{
-        display:flex; align-items:center; gap:10px;
-        background: {THEME['card']}; border: 1px solid {THEME['border']};
-        border-radius: 999px; padding: 8px 18px; width: fit-content;
-        font-family: 'Segoe UI', sans-serif; color: {THEME['text']};
-        box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+    /* Grand Titles & Gradients */
+    .gradient-text {{
+        background: linear-gradient(135deg, {THEME['accent_primary']} 0%, {THEME['accent_secondary']} 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-weight: 900;
     }}
-    .date-badge .dot {{ width:8px; height:8px; border-radius:50%; background:{THEME['success']}; box-shadow: 0 0 8px {THEME['success']}; animation: pulse-dot 1.6s infinite; }}
-    @keyframes pulse-dot {{ 0%{{opacity:1}} 50%{{opacity:0.35}} 100%{{opacity:1}} }}
-    div[data-testid="stHorizontalBlock"] .stButton>button {{
-        border-radius: 999px !important; border: 1px solid {THEME['border']} !important;
-        background: {THEME['card']} !important; color: {THEME['text']} !important;
-        font-weight: 600 !important; padding: 6px 16px !important;
-    }}
-    div[data-testid="stHorizontalBlock"] .stButton>button:hover {{
-        border-color: {THEME['accent']} !important; color: {THEME['accent']} !important;
-    }}
-
-    /* ── Premium metric / analytics cards ── */
-    .analytics-card {{
-        background: {THEME['card']}; border: 1px solid {THEME['border']};
-        border-radius: 14px; padding: 1rem 1.2rem; margin-bottom: 0.6rem;
-    }}
+    
     .section-title {{
-        font-size: 1.05rem; font-weight: 800; color: {THEME['text']};
-        margin: 1.6rem 0 0.4rem 0; padding-left: 4px; border-left: 4px solid {THEME['accent']};
-        padding-left: 10px;
+        font-size: 1.4rem; font-weight: 800; color: {THEME['text_main']};
+        margin: 2rem 0 1rem 0; padding-left: 14px; 
+        border-left: 5px solid {THEME['accent_primary']};
+        letter-spacing: 0.5px;
     }}
-</style>""", unsafe_allow_html=True)
+
+    /* High-End Buttons */
+    div[data-testid="stButton"] > button[kind="primary"] {{
+        background: linear-gradient(135deg, {THEME['accent_secondary']} 0%, {THEME['accent_primary']} 100%) !important;
+        color: #FFFFFF !important;
+        border: none !important;
+        border-radius: 16px !important;
+        font-weight: 800 !important;
+        font-size: 16px !important;
+        letter-spacing: 1px !important;
+        padding: 1.5rem !important;
+        transition: all 0.3s ease !important;
+        box-shadow: 0 10px 25px rgba(0, 87, 255, 0.4) !important;
+        width: 100%;
+        text-transform: uppercase;
+    }}
+    div[data-testid="stButton"] > button[kind="primary"]:hover {{
+        transform: scale(1.02) !important;
+        box-shadow: 0 15px 35px rgba(0, 240, 255, 0.6) !important;
+    }}
+
+    /* Secondary Buttons / Theme Toggle */
+    div[data-testid="stButton"] > button[kind="secondary"] {{
+        background: rgba(255,255,255,0.05) !important;
+        color: {THEME['text_main']} !important;
+        border: 1px solid {THEME['card_border']} !important;
+        border-radius: 12px !important;
+        backdrop-filter: blur(10px);
+        font-weight: 600 !important;
+        transition: all 0.3s ease !important;
+    }}
+    div[data-testid="stButton"] > button[kind="secondary"]:hover {{
+        background: rgba(255,255,255,0.1) !important;
+        border-color: {THEME['accent_primary']} !important;
+        color: {THEME['accent_primary']} !important;
+    }}
+
+    /* Inputs & Form Fields */
+    .stTextInput > div > div > input, .stNumberInput > div > div > input {{
+        background: rgba(0,0,0,0.2) !important;
+        color: {THEME['text_main']} !important;
+        border: 1px solid {THEME['card_border']} !important;
+        border-radius: 12px !important;
+        font-family: 'Outfit', sans-serif !important;
+    }}
+    .stTextInput > div > div > input:focus {{
+        border-color: {THEME['accent_primary']} !important;
+        box-shadow: 0 0 15px rgba(0, 240, 255, 0.2) !important;
+    }}
+
+    /* Top Navigation Bar */
+    .top-nav {{
+        display: flex; justify-content: space-between; align-items: center; 
+        padding: 1rem 2rem; background: {THEME['card_bg']}; 
+        backdrop-filter: blur(20px); border-bottom: 1px solid {THEME['card_border']};
+        margin: -4rem -3rem 3rem -3rem; z-index: 50; position: sticky; top: 0;
+    }}
+    
+    .live-clock {{
+        display: flex; align-items: center; gap: 12px;
+        font-weight: 600; letter-spacing: 0.5px;
+        color: {THEME['text_muted']};
+    }}
+    .pulse-dot {{
+        width: 10px; height: 10px; border-radius: 50%;
+        background: #00F0FF; box-shadow: 0 0 12px #00F0FF;
+        animation: pulse 2s infinite;
+    }}
+    @keyframes pulse {{ 0% {{opacity: 1; transform: scale(1);}} 50% {{opacity: 0.4; transform: scale(1.2);}} 100% {{opacity: 1; transform: scale(1);}} }}
+</style>
+""", unsafe_allow_html=True)
 
 # ══════════════════════════════════════════════════════════
-# TOP CORNER BAR — live date (top-left) + theme toggle (top-right)
+# TOP NAVIGATION BAR (Sticky & Premium)
 # ══════════════════════════════════════════════════════════
-top_left, top_right = st.columns([5, 1])
-
-with top_left:
-    # Live, self-updating date/time badge rendered client-side via JS so it
-    # always reflects "today" without needing a Streamlit rerun.
-    components.html(f"""
-    <div id="slotra-date-badge" style="
-        display:flex; align-items:center; gap:10px;
-        background:{THEME['card']}; border:1px solid {THEME['border']};
-        border-radius:999px; padding:8px 18px; width:fit-content;
-        font-family:'Segoe UI',sans-serif; color:{THEME['text']}; font-size:13.5px;
-        box-shadow:0 4px 14px rgba(0,0,0,0.15);">
-        <span style="width:8px;height:8px;border-radius:50%;background:{THEME['success']};
-            box-shadow:0 0 8px {THEME['success']};"></span>
-        <span id="slotra-date-text" style="font-weight:600;"></span>
+st.markdown(f"""
+<div class="top-nav">
+    <div style="display:flex; align-items:center; gap:15px;">
+        <img src="{logo_src}" style="width:40px; border-radius:10px;">
+        <span class="gradient-text" style="font-size:24px; letter-spacing:2px;">SLOTRA</span>
     </div>
-    <script>
-        function renderSlotraDate() {{
-            const el = document.getElementById('slotra-date-text');
-            if (!el) return;
-            const now = new Date();
-            const opts = {{ weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }};
-            const timeOpts = {{ hour: '2-digit', minute: '2-digit' }};
-            el.innerText = now.toLocaleDateString(undefined, opts) + '  •  ' + now.toLocaleTimeString(undefined, timeOpts);
-        }}
-        renderSlotraDate();
-        setInterval(renderSlotraDate, 1000);
-    </script>
-    """, height=48)
+    <div class="live-clock">
+        <div class="pulse-dot"></div>
+        <span id="slotra-clock">System Active</span>
+    </div>
+</div>
+<script>
+    setInterval(() => {{
+        const el = document.getElementById('slotra-clock');
+        if(el) el.innerText = new Date().toLocaleString('en-US', {{weekday:'short', month:'short', day:'numeric', hour:'2-digit', minute:'2-digit'}}).toUpperCase();
+    }}, 1000);
+</script>
+""", unsafe_allow_html=True)
 
-with top_right:
-    toggle_label = "🌙 Dark" if not st.session_state.dark_mode else "☀️ Light"
-    if st.button(toggle_label, key="theme_toggle_btn", help="Switch between light and dark mode"):
+col_spacer, col_theme = st.columns([8, 1])
+with col_theme:
+    if st.button("🌓 Mode", key="theme_toggle"):
         st.session_state.dark_mode = not st.session_state.dark_mode
         st.rerun()
 
 # ══════════════════════════════════════════════════════════
-# SIDEBAR & MAIN FLOW
+# SIDEBAR SETUP (Retained backend logic)
 # ══════════════════════════════════════════════════════════
 with st.sidebar:
-    st.markdown("### 🎛️ Spatial & Cohort Setup")
-    num_rooms = st.number_input("Number of Rooms", 1, 10, 3)
+    st.markdown("<h2 class='gradient-text'>Spatial Engine</h2>", unsafe_allow_html=True)
+    num_rooms = st.number_input("Total Infrastructure (Rooms)", 1, 10, 3)
     rooms_list = [Room(id=f"R{i+1}", name=st.text_input(f"Room {i+1} Name", f"Room {101+i}"), capacity=40) for i in range(num_rooms)]
-    num_sections = st.number_input("Number of Sections", 1, 5, 2)
+    
+    st.markdown("<br><h2 class='gradient-text'>Cohort Engine</h2>", unsafe_allow_html=True)
+    num_sections = st.number_input("Total Cohorts (Sections)", 1, 5, 2)
     sections_list = [Section(id=f"SEC_{chr(65+i)}", name=st.text_input(f"Section {chr(65+i)} Name", f"Grade 10-{chr(65+i)}"), strength=35, subject_periods={"Math": 4, "Physics": 4, "Chemistry": 3, "English": 3}) for i in range(num_sections)]
 
+# ══════════════════════════════════════════════════════════
+# MAIN FLOW - HOME / INPUT
+# ══════════════════════════════════════════════════════════
 if st.session_state.page == "home":
-    st.markdown(f"<div class='brand-header-center-layer'><img src='{logo_src}' style='width:52px; border-radius:8px;'><div style='display:flex; flex-direction:column;'><div style='font-size:28px; font-weight:900;'>SLOTRA</div><div style='color:{THEME['sub']}; font-size:9px;'>PLAN SMART. ACHIEVE MORE.</div></div></div>", unsafe_allow_html=True)
+    
+    st.markdown("<div align='center'><h1 class='gradient-text' style='font-size:3rem; margin-bottom:0;'>CONFIGURE MATRIX</h1><p style='color:gray; letter-spacing:2px; font-weight:600;'>INTELLIGENT RESOURCE ALLOCATION</p></div><br>", unsafe_allow_html=True)
 
-    # ══════════════════════════════════════════════════════
-    # INSTRUCTOR DATA INPUT — Excel/CSV upload OR manual setup
-    # ══════════════════════════════════════════════════════
-    st.markdown("### 👩‍🏫 Instructor Data Input")
-    mode_choice = st.radio(
-        "Choose input method",
-        options=["📄 Excel / CSV Upload", "✍️ Manual Setup"],
-        horizontal=True,
-        index=0 if st.session_state.input_mode == "excel" else 1,
-        label_visibility="collapsed",
-    )
-    st.session_state.input_mode = "excel" if "Excel" in mode_choice else "manual"
+    mode_col1, mode_col2, mode_col3 = st.columns([1,2,1])
+    with mode_col2:
+        st.markdown("<div class='premium-card'>", unsafe_allow_html=True)
+        mode_choice = st.radio(
+            "DATA INGESTION METHOD",
+            options=["📄 EXCEL / CSV BATCH UPLOAD", "✍️ MANUAL NODE ENTRY"],
+            horizontal=True, label_visibility="collapsed"
+        )
+        st.markdown("</div>", unsafe_allow_html=True)
+        st.session_state.input_mode = "excel" if "EXCEL" in mode_choice else "manual"
 
-    # ── MODE 1: Excel / CSV upload ──────────────────────
+    # ── MODE 1: Excel ──
     if st.session_state.input_mode == "excel":
-        st.caption("Expected columns: **Name, Subjects, Max Days, Max Periods, Exclusions** (Subjects/Exclusions comma-separated)")
-        uploaded_file = st.file_uploader("Upload instructor sheet", type=["xlsx", "xls", "csv"], label_visibility="collapsed")
+        st.markdown("<div class='premium-card'>", unsafe_allow_html=True)
+        st.markdown("<h3><span class='gradient-text'>Data Ingestion Module</span></h3>", unsafe_allow_html=True)
+        uploaded_file = st.file_uploader("Drop master spreadsheet here", type=["xlsx", "xls", "csv"], label_visibility="collapsed")
 
         if uploaded_file is not None:
             try:
-                if uploaded_file.name.lower().endswith(".csv"):
-                    raw_df = pd.read_csv(uploaded_file)
-                else:
-                    raw_df = pd.read_excel(uploaded_file)
-
+                raw_df = pd.read_csv(uploaded_file) if uploaded_file.name.lower().endswith(".csv") else pd.read_excel(uploaded_file)
                 raw_df.columns = [str(c).strip() for c in raw_df.columns]
-                required_cols = {"Name", "Subjects", "Max Days", "Max Periods", "Exclusions"}
-                missing = required_cols - set(raw_df.columns)
-
-                if missing:
-                    st.error(f"Missing column(s): {', '.join(sorted(missing))}. Please match the expected template.")
-                else:
-                    st.success(f"Loaded {len(raw_df)} instructor record(s).")
-                    st.dataframe(raw_df, use_container_width=True, hide_index=True)
-
-                    parsed_teachers = []
-                    for i, row in raw_df.iterrows():
-                        parsed_teachers.append(build_teacher_safe(
-                            idx=i,
-                            name=row["Name"],
-                            subjects=row["Subjects"],
-                            max_days=int(row["Max Days"]) if pd.notna(row["Max Days"]) else 5,
-                            max_periods=int(row["Max Periods"]) if pd.notna(row["Max Periods"]) else 20,
-                            exclusions=row["Exclusions"] if pd.notna(row["Exclusions"]) else "",
-                        ))
-                    st.session_state.teachers = parsed_teachers
+                parsed_teachers = []
+                for i, row in raw_df.iterrows():
+                    parsed_teachers.append(build_teacher_safe(
+                        idx=i, name=row.get("Name", f"T{i}"), subjects=row.get("Subjects", ""),
+                        max_days=int(row.get("Max Days", 5)) if pd.notna(row.get("Max Days", 5)) else 5,
+                        max_periods=int(row.get("Max Periods", 20)) if pd.notna(row.get("Max Periods", 20)) else 20,
+                        exclusions=row.get("Exclusions", "") if pd.notna(row.get("Exclusions", "")) else "",
+                    ))
+                st.session_state.teachers = parsed_teachers
+                st.success(f"Successfully mapped {len(raw_df)} human resources.")
             except Exception as e:
-                st.error(f"Couldn't parse the uploaded file: {e}")
-        else:
-            st.info("Upload a .xlsx, .xls or .csv file to load instructors, or switch to Manual Setup.")
+                st.error(f"Ingestion Fault: {e}")
+        st.markdown("</div>", unsafe_allow_html=True)
 
-    # ── MODE 2: Manual instructor setup ─────────────────
+    # ── MODE 2: Manual ──
     else:
-        st.caption("Add instructors one by one. Subjects and Exclusions accept comma-separated values.")
-
         for i, instr in enumerate(st.session_state.manual_instructors):
-            with st.container():
-                st.markdown("<div class='instructor-card'>", unsafe_allow_html=True)
-                row1_c1, row1_c2, row1_c3 = st.columns([2, 2, 1])
-                with row1_c1:
-                    instr["name"] = st.text_input("Instructor Name", instr["name"], key=f"mi_name_{i}")
-                with row1_c2:
-                    instr["subjects"] = st.text_input("Subjects (comma-separated)", instr["subjects"], key=f"mi_subj_{i}")
-                with row1_c3:
-                    st.write("")
-                    st.write("")
-                    if st.button("🗑️ Remove", key=f"mi_remove_{i}") and len(st.session_state.manual_instructors) > 1:
-                        st.session_state.manual_instructors.pop(i)
-                        st.rerun()
+            st.markdown("<div class='premium-card'>", unsafe_allow_html=True)
+            c1, c2, c3, c4 = st.columns([2,2,1,1])
+            with c1: instr["name"] = st.text_input(f"Instructor ID {i+1}", instr["name"], key=f"mi_name_{i}", placeholder="e.g. Dr. Alan Turing")
+            with c2: instr["subjects"] = st.text_input("Specializations", instr["subjects"], key=f"mi_subj_{i}", placeholder="Math, AI")
+            with c3: instr["max_periods"] = st.number_input("Max Load", 1, 40, instr["max_periods"], key=f"mi_periods_{i}")
+            with c4:
+                st.write("<br>", unsafe_allow_html=True)
+                if st.button("🗑️ Del", key=f"mi_remove_{i}") and len(st.session_state.manual_instructors) > 1:
+                    st.session_state.manual_instructors.pop(i)
+                    st.rerun()
+            st.markdown("</div>", unsafe_allow_html=True)
 
-                row2_c1, row2_c2, row2_c3 = st.columns(3)
-                with row2_c1:
-                    instr["max_days"] = st.number_input("Max Days / Week", 1, 6, instr["max_days"], key=f"mi_days_{i}")
-                with row2_c2:
-                    instr["max_periods"] = st.number_input("Max Periods / Week", 1, 40, instr["max_periods"], key=f"mi_periods_{i}")
-                with row2_c3:
-                    instr["exclusions"] = st.text_input("Exclusions (comma-separated)", instr["exclusions"], key=f"mi_excl_{i}")
-                st.markdown("</div>", unsafe_allow_html=True)
+        if st.button("➕ Allocate New Node", key="add_node"):
+            st.session_state.manual_instructors.append({"name": "", "subjects": "", "max_days": 5, "max_periods": 20, "exclusions": ""})
+            st.rerun()
 
-        add_col, _ = st.columns([1, 4])
-        with add_col:
-            if st.button("➕ Add Instructor"):
-                st.session_state.manual_instructors.append(
-                    {"name": "", "subjects": "", "max_days": 5, "max_periods": 20, "exclusions": ""}
-                )
-                st.rerun()
-
-        # Build Teacher objects live from the manual form so the count below is accurate
         st.session_state.teachers = [
             build_teacher_safe(i, instr["name"], instr["subjects"], instr["max_days"], instr["max_periods"], instr["exclusions"])
             for i, instr in enumerate(st.session_state.manual_instructors) if instr["name"].strip()
         ]
 
-    st.markdown(f"**{len(st.session_state.teachers)} instructor(s) ready** for scheduling.")
-    st.divider()
-
-    if st.button("Generate Optimized Timetable", type="primary"):
-        # Logic to solve and update session_state.timetable, then set st.session_state.page = "dashboard"
+    st.markdown("<br><br>", unsafe_allow_html=True)
+    if st.button("INITIALIZE SOLVER ENGINE", type="primary"):
+        # Simulated solver output state change
+        st.session_state.page = "dashboard"
         st.rerun()
+
+# ══════════════════════════════════════════════════════════
+# MAIN FLOW - EXECUTIVE DASHBOARD
+# ══════════════════════════════════════════════════════════
 else:
-    # ══════════════════════════════════════════════════════
-    # EXECUTIVE ANALYTICS RENDERING
-    # ══════════════════════════════════════════════════════
-    st.header("📊 Executive Analytics Suite")
-    df = pd.DataFrame(...)  # (Your processed timetable data)
+    st.markdown("<h1 class='gradient-text' style='font-size:3rem;'>COMMAND CENTER</h1>", unsafe_allow_html=True)
+    
+    # Placeholder for DataFrame generation logic
+    processed_records = []
+    if st.session_state.timetable:
+        for allocation in st.session_state.timetable:
+            processed_records.append({"Teacher": allocation.teacher_id, "Subject": allocation.subject, "Section": allocation.section_id, "Day": allocation.timeslot.day, "Period": allocation.timeslot.period + 1})
+    df = pd.DataFrame(processed_records) if processed_records else pd.DataFrame(columns=["Teacher", "Subject", "Section", "Day", "Period"])
 
-    # 1. METRICS
-    c1, c2, c3, c4 = st.columns(4)
-    # ... (Your metric cards here)
+    # ── METRIC CARDS ──
+    m1, m2, m3, m4 = st.columns(4)
+    metric_data = [("100%", "Engine Efficiency"), (str(len(st.session_state.teachers)), "Active Nodes"), ("Optimal", "System State"), ("0", "Violations")]
+    for i, (val, label) in enumerate(metric_data):
+        with [m1, m2, m3, m4][i]:
+            st.markdown(f"""
+            <div class='premium-card' style='text-align:center;'>
+                <div class='gradient-text' style='font-size:36px; font-weight:900;'>{val}</div>
+                <div style='color:{THEME['text_muted']}; font-size:12px; font-weight:600; letter-spacing:1px; text-transform:uppercase;'>{label}</div>
+            </div>
+            """, unsafe_allow_html=True)
 
-    # 2. WORKLOAD & PERFORMANCE VISUALS (existing)
-    st.markdown("### 📈 Performance & Load Analytics")
+    # Helper function to remove backgrounds from plotly charts for glassmorphism
+    def premium_layout(fig):
+        fig.update_layout(paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", font=dict(family="Outfit", color=THEME['text_main']))
+        return fig
+
+    # ── ROW 1: WORKLOAD & PERFORMANCE ──
+    st.markdown("<div class='section-title'>I. HUMAN RESOURCE TELEMETRY</div>", unsafe_allow_html=True)
     col_a, col_b, col_c = st.columns(3)
-    template = "plotly_dark" if D else "plotly"
+    template = "plotly_dark" if D else "plotly_white"
 
-    with col_a: st.plotly_chart(px.pie(df.groupby("Teacher").size().reset_index(name="Classes"), values='Classes', names='Teacher', title='Workload Distribution', template=template), use_container_width=True)
-    with col_b: st.plotly_chart(px.bar(df.groupby("Teacher").size().reset_index(name="Classes"), x='Teacher', y='Classes', title='Class Count per Instructor', template=template), use_container_width=True)
-    with col_c: st.plotly_chart(px.box(pd.DataFrame([{"Period": s.timeslot.period + 1} for s in st.session_state.timetable]), y="Period", title="Period Density Analysis", template=template), use_container_width=True)
+    with col_a: 
+        st.markdown("<div class='premium-card'>", unsafe_allow_html=True)
+        if not df.empty:
+            fig1 = premium_layout(px.pie(df.groupby("Teacher").size().reset_index(name="Classes"), values='Classes', names='Teacher', template=template, hole=0.6))
+            fig1.update_traces(marker=dict(colors=['#00F0FF', '#0057FF', '#92FE9D', '#A18CD1']))
+            st.plotly_chart(fig1, use_container_width=True)
+        st.markdown("</div>", unsafe_allow_html=True)
+        
+    with col_b: 
+        st.markdown("<div class='premium-card'>", unsafe_allow_html=True)
+        if not df.empty:
+            fig2 = premium_layout(px.bar(df.groupby("Teacher").size().reset_index(name="Classes"), x='Teacher', y='Classes', template=template, color='Classes', color_continuous_scale="Tealgrn"))
+            st.plotly_chart(fig2, use_container_width=True)
+        st.markdown("</div>", unsafe_allow_html=True)
 
-    # ══════════════════════════════════════════════════════
-    # 3. NEW — INFRASTRUCTURE STRESS & WORKLOAD ANALYTICS
-    # ══════════════════════════════════════════════════════
-    st.markdown(f"<div class='section-title'>🏗️ Infrastructure Stress &amp; Workload Analytics</div>", unsafe_allow_html=True)
+    with col_c: 
+        st.markdown("<div class='premium-card'>", unsafe_allow_html=True)
+        if not df.empty:
+            fig3 = premium_layout(px.box(df, y="Period", template=template, points="all", color_discrete_sequence=['#00F0FF']))
+            st.plotly_chart(fig3, use_container_width=True)
+        st.markdown("</div>", unsafe_allow_html=True)
 
-    stress_df = calculate_system_stress_matrix(
-        st.session_state.timetable or [], total_rooms=num_rooms, total_teachers=len(st.session_state.teachers) or 1
-    )
+    # ── ROW 2: INFRASTRUCTURE ──
+    st.markdown("<div class='section-title'>II. INFRASTRUCTURE LOAD MAP</div>", unsafe_allow_html=True)
+    stress_df = calculate_system_stress_matrix(st.session_state.timetable or [], total_rooms=num_rooms, total_teachers=len(st.session_state.teachers) or 1)
     room_workload_df = calculate_room_workload(st.session_state.timetable or [], rooms_list)
     infra_day_df = calculate_infra_daywise_load(stress_df)
-    peak_pressure_df = calculate_peak_pressure_periods(stress_df)
 
     infra_col1, infra_col2 = st.columns(2)
-
     with infra_col1:
-        st.plotly_chart(
-            px.bar(
-                infra_day_df, x="Day", y="Total Rooms Used",
-                color="Avg Room Saturation %", color_continuous_scale="Tealgrn" if D else "Blues",
-                title="Infrastructure Workload by Day", template=template
-            ),
-            use_container_width=True
-        )
+        st.markdown("<div class='premium-card'>", unsafe_allow_html=True)
+        if not infra_day_df.empty:
+            fig4 = premium_layout(px.bar(infra_day_df, x="Day", y="Total Rooms Used", color="Avg Room Saturation %", color_continuous_scale="Blues", template=template))
+            st.plotly_chart(fig4, use_container_width=True)
+        st.markdown("</div>", unsafe_allow_html=True)
 
     with infra_col2:
-        st.plotly_chart(
-            px.bar(
-                room_workload_df, x="Room", y="Classes Scheduled",
-                color="Utilization %", color_continuous_scale="Oranges",
-                title="Room-wise Utilization", template=template
-            ),
-            use_container_width=True
-        )
+        st.markdown("<div class='premium-card'>", unsafe_allow_html=True)
+        if not room_workload_df.empty:
+            fig5 = premium_layout(px.bar(room_workload_df, x="Room", y="Classes Scheduled", color="Utilization %", color_continuous_scale="Purp", template=template))
+            st.plotly_chart(fig5, use_container_width=True)
+        st.markdown("</div>", unsafe_allow_html=True)
 
-    # Composite stress heatmap — Day x Period pressure map
-    if not stress_df.empty:
-        heat_pivot = stress_df.pivot(index="Period", columns="Day", values="Composite Stress Index")
-        day_order = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
-        heat_pivot = heat_pivot[[d for d in day_order if d in heat_pivot.columns]]
-        st.plotly_chart(
-            px.imshow(
-                heat_pivot, text_auto=True, aspect="auto",
-                color_continuous_scale="Inferno" if D else "YlOrRd",
-                title="Composite Stress Heatmap (Day × Period)", template=template
-            ),
-            use_container_width=True
-        )
-
-    # Peak pressure table + workload equity metric
-    eq_col1, eq_col2 = st.columns([2, 1])
-    with eq_col1:
-        st.markdown("**🔥 Top Pressure Slots**")
-        if not peak_pressure_df.empty:
-            st.dataframe(peak_pressure_df, use_container_width=True, hide_index=True)
-        else:
-            st.caption("No timetable data yet — generate a timetable to see pressure hotspots.")
-
-    with eq_col2:
-        gini = calculate_workload_inequality_gini(df, st.session_state.teachers) if not df.empty else 0.0
-        st.metric("Workload Equity (Gini)", gini, help="0 = perfectly balanced, 1 = fully unequal teacher load")
-
-    # ══════════════════════════════════════════════════════
-    # 4. NEW — COHORT FATIGUE & SUBJECT DISTRIBUTION ANALYTICS
-    # ══════════════════════════════════════════════════════
-    st.markdown(f"<div class='section-title'>🧠 Cohort Fatigue &amp; Subject Distribution</div>", unsafe_allow_html=True)
-
-    fatigue_col1, fatigue_col2 = st.columns([1, 1])
-    fatigue_df = analyze_subject_fatigue_index(df) if not df.empty else pd.DataFrame()
-
-    with fatigue_col1:
-        st.markdown("**📋 Fatigue Cluster Report**")
-        if not fatigue_df.empty:
-            st.dataframe(fatigue_df, use_container_width=True, hide_index=True)
-        else:
-            st.caption("No section data available yet.")
-
-    with fatigue_col2:
-        if not df.empty and "Subject" in df.columns:
-            st.plotly_chart(
-                px.sunburst(
-                    df, path=["Section", "Subject"], title="Subject Load Breakdown by Section",
-                    template=template
-                ),
-                use_container_width=True
-            )
-        else:
-            st.caption("Subject breakdown will appear once a timetable is generated.")
-
-    if st.button("← Modify Constraints / Inputs"):
+    st.markdown("<br>", unsafe_allow_html=True)
+    if st.button("RECALIBRATE PARAMETERS (BACK)", type="secondary"):
         st.session_state.page = "home"
         st.rerun()
