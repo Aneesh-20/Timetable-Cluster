@@ -117,6 +117,29 @@ def calculate_peak_pressure_periods(stress_df, top_n=5):
         return pd.DataFrame()
     return stress_df.sort_values("Composite Stress Index", ascending=False).head(top_n).reset_index(drop=True)
 
+def build_teacher_safe(idx, name, subjects, max_days, max_periods, exclusions):
+    """
+    Constructs a Teacher object without assuming an exact constructor signature
+    (src/models.py wasn't available at edit time). Tries the most common field
+    names first; falls back to a plain dict + on-screen warning so the app
+    never crashes on a mismatched Teacher(...) signature. Adjust the kwargs
+    below to match your real Teacher class if the warning appears.
+    """
+    subj_list = [s.strip() for s in str(subjects).split(",") if s.strip()]
+    excl_list = [e.strip() for e in str(exclusions).split(",") if e.strip()]
+    attempts = [
+        dict(id=f"T{idx+1}", name=name, subjects=subj_list, max_days=max_days, max_periods=max_periods, exclusions=excl_list),
+        dict(id=f"T{idx+1}", name=name, subjects=subj_list, max_periods_per_week=max_periods, exclusions=excl_list),
+        dict(name=name, subjects=subj_list, max_days=max_days, max_periods=max_periods),
+    ]
+    for kwargs in attempts:
+        try:
+            return Teacher(**kwargs)
+        except TypeError:
+            continue
+    st.warning(f"Couldn't match Teacher(...) constructor for '{name}' — using a plain record instead. Update build_teacher_safe to match your Teacher model's real fields.")
+    return {"id": f"T{idx+1}", "name": name, "subjects": subj_list, "max_days": max_days, "max_periods": max_periods, "exclusions": excl_list}
+
 # ══════════════════════════════════════════════════════════
 # APP INITIALIZATION & THEME
 # ══════════════════════════════════════════════════════════
@@ -246,6 +269,103 @@ with st.sidebar:
 
 if st.session_state.page == "home":
     st.markdown(f"<div class='brand-header-center-layer'><img src='{logo_src}' style='width:52px; border-radius:8px;'><div style='display:flex; flex-direction:column;'><div style='font-size:28px; font-weight:900;'>SLOTRA</div><div style='color:{THEME['sub']}; font-size:9px;'>PLAN SMART. ACHIEVE MORE.</div></div></div>", unsafe_allow_html=True)
+
+    # ══════════════════════════════════════════════════════
+    # INSTRUCTOR DATA INPUT — Excel/CSV upload OR manual setup
+    # ══════════════════════════════════════════════════════
+    st.markdown("### 👩‍🏫 Instructor Data Input")
+    mode_choice = st.radio(
+        "Choose input method",
+        options=["📄 Excel / CSV Upload", "✍️ Manual Setup"],
+        horizontal=True,
+        index=0 if st.session_state.input_mode == "excel" else 1,
+        label_visibility="collapsed",
+    )
+    st.session_state.input_mode = "excel" if "Excel" in mode_choice else "manual"
+
+    # ── MODE 1: Excel / CSV upload ──────────────────────
+    if st.session_state.input_mode == "excel":
+        st.caption("Expected columns: **Name, Subjects, Max Days, Max Periods, Exclusions** (Subjects/Exclusions comma-separated)")
+        uploaded_file = st.file_uploader("Upload instructor sheet", type=["xlsx", "xls", "csv"], label_visibility="collapsed")
+
+        if uploaded_file is not None:
+            try:
+                if uploaded_file.name.lower().endswith(".csv"):
+                    raw_df = pd.read_csv(uploaded_file)
+                else:
+                    raw_df = pd.read_excel(uploaded_file)
+
+                raw_df.columns = [str(c).strip() for c in raw_df.columns]
+                required_cols = {"Name", "Subjects", "Max Days", "Max Periods", "Exclusions"}
+                missing = required_cols - set(raw_df.columns)
+
+                if missing:
+                    st.error(f"Missing column(s): {', '.join(sorted(missing))}. Please match the expected template.")
+                else:
+                    st.success(f"Loaded {len(raw_df)} instructor record(s).")
+                    st.dataframe(raw_df, use_container_width=True, hide_index=True)
+
+                    parsed_teachers = []
+                    for i, row in raw_df.iterrows():
+                        parsed_teachers.append(build_teacher_safe(
+                            idx=i,
+                            name=row["Name"],
+                            subjects=row["Subjects"],
+                            max_days=int(row["Max Days"]) if pd.notna(row["Max Days"]) else 5,
+                            max_periods=int(row["Max Periods"]) if pd.notna(row["Max Periods"]) else 20,
+                            exclusions=row["Exclusions"] if pd.notna(row["Exclusions"]) else "",
+                        ))
+                    st.session_state.teachers = parsed_teachers
+            except Exception as e:
+                st.error(f"Couldn't parse the uploaded file: {e}")
+        else:
+            st.info("Upload a .xlsx, .xls or .csv file to load instructors, or switch to Manual Setup.")
+
+    # ── MODE 2: Manual instructor setup ─────────────────
+    else:
+        st.caption("Add instructors one by one. Subjects and Exclusions accept comma-separated values.")
+
+        for i, instr in enumerate(st.session_state.manual_instructors):
+            with st.container():
+                st.markdown("<div class='instructor-card'>", unsafe_allow_html=True)
+                row1_c1, row1_c2, row1_c3 = st.columns([2, 2, 1])
+                with row1_c1:
+                    instr["name"] = st.text_input("Instructor Name", instr["name"], key=f"mi_name_{i}")
+                with row1_c2:
+                    instr["subjects"] = st.text_input("Subjects (comma-separated)", instr["subjects"], key=f"mi_subj_{i}")
+                with row1_c3:
+                    st.write("")
+                    st.write("")
+                    if st.button("🗑️ Remove", key=f"mi_remove_{i}") and len(st.session_state.manual_instructors) > 1:
+                        st.session_state.manual_instructors.pop(i)
+                        st.rerun()
+
+                row2_c1, row2_c2, row2_c3 = st.columns(3)
+                with row2_c1:
+                    instr["max_days"] = st.number_input("Max Days / Week", 1, 6, instr["max_days"], key=f"mi_days_{i}")
+                with row2_c2:
+                    instr["max_periods"] = st.number_input("Max Periods / Week", 1, 40, instr["max_periods"], key=f"mi_periods_{i}")
+                with row2_c3:
+                    instr["exclusions"] = st.text_input("Exclusions (comma-separated)", instr["exclusions"], key=f"mi_excl_{i}")
+                st.markdown("</div>", unsafe_allow_html=True)
+
+        add_col, _ = st.columns([1, 4])
+        with add_col:
+            if st.button("➕ Add Instructor"):
+                st.session_state.manual_instructors.append(
+                    {"name": "", "subjects": "", "max_days": 5, "max_periods": 20, "exclusions": ""}
+                )
+                st.rerun()
+
+        # Build Teacher objects live from the manual form so the count below is accurate
+        st.session_state.teachers = [
+            build_teacher_safe(i, instr["name"], instr["subjects"], instr["max_days"], instr["max_periods"], instr["exclusions"])
+            for i, instr in enumerate(st.session_state.manual_instructors) if instr["name"].strip()
+        ]
+
+    st.markdown(f"**{len(st.session_state.teachers)} instructor(s) ready** for scheduling.")
+    st.divider()
+
     if st.button("Generate Optimized Timetable", type="primary"):
         # Logic to solve and update session_state.timetable, then set st.session_state.page = "dashboard"
         st.rerun()
