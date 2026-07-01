@@ -90,7 +90,7 @@ D = st.session_state.dark_mode
 THEME = {
     "bg": "#0B0E14" if D else "#F5F7FA",
     "card": "rgba(22, 28, 45, 0.65)" if D else "rgba(255, 255, 255, 0.9)",
-    "accent": "#14A8B7" if D else "#0070F3",  # Deep slate teal variant from your sample image
+    "accent": "#14A8B7" if D else "#0070F3",
     "accent_neon": "#4FC3F7",
     "text": "#F3F4F6" if D else "#111827",
     "sub": "#9CA3AF" if D else "#4B5563",
@@ -99,7 +99,6 @@ THEME = {
 }
 
 # ── PREMIUM COMBINATORIAL EMBEDDED GRAPHIC LOGO ─────────
-# Hand-tailored clean typographic layout inspired by the uploaded sketch schematic logo
 premium_vector_logo = f"""
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 85" width="280" height="70">
   <defs>
@@ -111,21 +110,13 @@ premium_vector_logo = f"""
       <stop offset="100%" stop-color="{THEME['accent']}" />
     </linearGradient>
   </defs>
-
   <g filter="url(#premium-shadow)">
     <path d="M 46 12 C 18 12, 16 42, 38 44 C 60 46, 56 74, 28 74" fill="none" stroke="url(#gradient-accent)" stroke-width="6.5" stroke-linecap="round"/>
     <path d="M 38 20 A 15 15 0 0 1 50 36" fill="none" stroke="{THEME['accent_neon']}" stroke-width="2.5" stroke-linecap="round" opacity="0.8"/>
-    
     <rect x="25" y="48" width="24" height="18" rx="2" fill="rgba(12,82,116,0.3)" stroke="{THEME['accent']}" stroke-width="1.2" />
-    <line x1="33" y1="48" x2="33" y2="66" stroke="{THEME['accent']}" stroke-width="0.8" opacity="0.5"/>
-    <line x1="41" y1="48" x2="41" y2="66" stroke="{THEME['accent']}" stroke-width="0.8" opacity="0.5"/>
-    <line x1="25" y1="54" x2="49" y2="54" stroke="{THEME['accent']}" stroke-width="0.8" opacity="0.5"/>
-    <line x1="25" y1="60" x2="49" y2="60" stroke="{THEME['accent']}" stroke-width="0.8" opacity="0.5"/>
-    
     <rect x="34" y="55" width="6" height="4" fill="{THEME['accent_neon']}" rx="0.5" />
     <rect x="42" y="61" width="6" height="4" fill="#FFFFFF" rx="0.5" />
   </g>
-
   <g font-family="'Inter', 'Montserrat', sans-serif">
     <text x="76" y="43" font-size="34" font-weight="900" fill="#FFFFFF" letter-spacing="4">SLOTR<tspan fill="{THEME['accent_neon']}">A</tspan></text>
     <text x="78" y="62" font-family="'JetBrains Mono', monospace" font-size="8.5" font-weight="700" fill="{THEME['sub']}" letter-spacing="1.8">PLAN SMART. ACHIEVE MORE.</text>
@@ -133,32 +124,24 @@ premium_vector_logo = f"""
 </svg>
 """
 b64_logo = base64.b64encode(premium_vector_logo.encode()).decode()
-logo_html = f'<div class="brand-header-layer"><img src="data:image/svg+xml;base64,{b64_logo}" class="app-corner-logo" /></div>'
+logo_html = f'<div class="brand-header-layer"><img src="data:image/svg+xml;base64,{b64_logo}" class="app-logo" /></div>'
 
 st.markdown(f"""
 <style>
     .stApp {{background-color: {THEME['bg']}!important; color: {THEME['text']}!important; font-family: 'Inter', sans-serif;}}
-    .block-container {{padding: 6.5rem 3rem 3rem !important; max-width: 1400px; position: relative; z-index: 10;}}
+    .block-container {{padding: 2rem 3rem 3rem !important; max-width: 1400px;}}
     .grid-bg {{position:fixed; inset:0; pointer-events:none; z-index:1; background-image: linear-gradient({THEME['grid']} 1px, transparent 1px), linear-gradient(90deg, {THEME['grid']} 1px, transparent 1px); background-size: 32px 32px;}}
     
-    /* Modern Glassmorphic Container Plate for the Premium Branding Vector Overlay */
+    /* Centered Header Logic */
     .brand-header-layer {{
-        position: absolute;
-        top: 20px;
-        left: 35px;
-        z-index: 999999 !important;
-        padding: 8px 18px 4px 12px;
-        background: rgba(11, 14, 20, 0.7);
-        backdrop-filter: blur(14px);
-        -webkit-backdrop-filter: blur(14px);
-        border: 1px solid rgba(20, 168, 183, 0.2);
-        border-radius: 14px;
-        display: block !important;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        width: 100%;
+        margin-bottom: 2rem;
     }}
-    .app-corner-logo {{
-        display: block !important;
-        height: 52px !important;
+    .app-logo {{
+        height: 70px !important; 
         width: auto !important;
     }}
     
