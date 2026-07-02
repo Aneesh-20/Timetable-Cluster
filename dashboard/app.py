@@ -197,9 +197,9 @@ D = st.session_state.dark_mode
 # Numeric face: JetBrains Mono (precision-instrument readouts)
 # ══════════════════════════════════════════════════════════
 THEME = {
-    "bg": "#07090C" if D else "#F4F7F8",
-    "bg_grad_a": "#0A1016" if D else "#FAFCFD",
-    "bg_grad_b": "#07090C" if D else "#EFF3F4",
+    "bg": "#040506" if D else "#F4F7F8",
+    "bg_grad_a": "#070B0F" if D else "#FAFCFD",
+    "bg_grad_b": "#040506" if D else "#EFF3F4",
     "panel": "rgba(14, 20, 27, 0.72)" if D else "rgba(255, 255, 255, 0.86)",
     "panel_solid": "#0E141B" if D else "#FFFFFF",
     "accent": "#3FB6C4" if D else "#1E7A87",
@@ -239,7 +239,7 @@ if not st.session_state.splash_done:
     <style>
         .slotra-preloader {{
             position:fixed; inset:0; z-index:999;
-            background: radial-gradient(ellipse at 50% 40%, #12161F 0%, #07090D 70%);
+            background: radial-gradient(ellipse at 50% 40%, #0C1015 0%, #040506 70%);
             display:flex; justify-content:center; align-items:center;
         }}
         .slotra-preloader-inner {{ position:relative; display:flex; flex-direction:column; align-items:center; gap:14px; }}
@@ -287,7 +287,7 @@ st.markdown(f"""
         border: 1px solid rgba(63,182,196,0.16);
         border-radius: 28px;
         background: linear-gradient(180deg, rgba(10,16,22,0.55) 0%, rgba(7,9,12,0.35) 100%);
-        box-shadow: 0 0 0 6px #07090C, 0 0 0 7px rgba(63,182,196,0.10), 0 30px 90px rgba(0,0,0,0.55);
+        box-shadow: 0 0 0 6px #040506, 0 0 0 7px rgba(63,182,196,0.10), 0 30px 90px rgba(0,0,0,0.55);
         padding: 2.4rem 2.8rem 2.8rem 2.8rem !important;
         margin-top: 0.6rem;
     }}
@@ -295,7 +295,7 @@ st.markdown(f"""
     /* Chalkboard timetable-grid + academic-icon texture, in the brand's navy/teal tones */
     .stApp::after {{
         content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 0;
-        opacity: {"0.9" if D else "0.35"};
+        opacity: {"0.7" if D else "0.35"};
         background-image: url("data:image/svg+xml;base64,{BG_PATTERN_B64}");
         background-size: 480px 480px;
         background-repeat: repeat;
