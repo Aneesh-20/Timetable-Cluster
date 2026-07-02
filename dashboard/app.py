@@ -381,6 +381,20 @@ st.markdown(f"""
         border-radius: 9px !important; padding: 7px 16px !important; transition: all 0.18s ease !important;
     }}
     div[role="radiogroup"] label:hover {{ border-color: {THEME['border']} !important; }}
+    .centered-radio div[role="radiogroup"] {{ justify-content: center !important; }}
+    .centered-radio [data-testid="stWidgetLabel"] {{ display: flex !important; justify-content: center !important; }}
+
+    /* ── Download-template buttons: quieter secondary treatment ── */
+    .stDownloadButton>button {{
+        border-radius: 9px !important; border: 1px dashed {THEME['border']} !important;
+        background: transparent !important; color: {THEME['text_dim']} !important;
+        font-size: 12.5px !important; font-weight: 600 !important;
+        padding: 0.4rem 0.9rem !important; box-shadow: none !important;
+    }}
+    .stDownloadButton>button:hover {{
+        border-style: solid !important; border-color: {THEME['accent']} !important;
+        color: {THEME['accent_bright']} !important; background: {THEME['accent_dim']} !important;
+    }}
 
     /* ── Inputs ── */
     .stTextInput input, .stNumberInput input, .stSelectbox > div, .stTextArea textarea {{
@@ -523,6 +537,7 @@ if st.session_state.page == "home":
     # INSTRUCTOR DATA INPUT — Excel/CSV upload OR manual setup
     # ══════════════════════════════════════════════════════
     st.markdown("### 👩‍🏫 Instructor Data Input")
+    st.markdown("<div class='centered-radio'>", unsafe_allow_html=True)
     mode_choice = st.radio(
         "Choose input method",
         options=["📄 Excel / CSV Upload", "✍️ Manual Setup"],
@@ -530,11 +545,42 @@ if st.session_state.page == "home":
         index=0 if st.session_state.input_mode == "excel" else 1,
         label_visibility="collapsed",
     )
+    st.markdown("</div>", unsafe_allow_html=True)
     st.session_state.input_mode = "excel" if "Excel" in mode_choice else "manual"
 
     # ── MODE 1: Excel / CSV upload ──────────────────────
     if st.session_state.input_mode == "excel":
         st.caption("Needs a column for each of: **Name, Subjects, Max Days, Max Periods, Exclusions** — exact header names, spacing, and casing don't matter (e.g. 'MaxDays' or 'max_periods' both work).")
+
+        sample_template_df = pd.DataFrame({
+            "Name": ["Aarav Mehta", "Priya Nair", "Rohan Das"],
+            "Subjects": ["Math, Physics", "Chemistry, Biology", "English, History"],
+            "Max Days": [5, 4, 5],
+            "Max Periods": [20, 16, 22],
+            "Exclusions": ["Friday P8", "", "Monday P1, Wednesday P1"],
+        })
+        template_col1, template_col2, _ = st.columns([1.4, 1.4, 3])
+        with template_col1:
+            st.download_button(
+                "⬇ Sample .csv",
+                data=sample_template_df.to_csv(index=False).encode("utf-8"),
+                file_name="slotra_instructor_template.csv",
+                mime="text/csv",
+                use_container_width=True,
+            )
+        with template_col2:
+            import io as _io
+            _xlsx_buf = _io.BytesIO()
+            with pd.ExcelWriter(_xlsx_buf, engine="openpyxl") as _writer:
+                sample_template_df.to_excel(_writer, index=False, sheet_name="Instructors")
+            st.download_button(
+                "⬇ Sample .xlsx",
+                data=_xlsx_buf.getvalue(),
+                file_name="slotra_instructor_template.xlsx",
+                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                use_container_width=True,
+            )
+
         uploaded_file = st.file_uploader("Upload instructor sheet", type=["xlsx", "xls", "csv"], label_visibility="collapsed")
 
         if uploaded_file is not None:
@@ -614,9 +660,11 @@ if st.session_state.page == "home":
     st.markdown(f"**{len(st.session_state.teachers)} instructor(s) ready** for scheduling.")
     st.divider()
 
-    if st.button("Generate Optimized Timetable", type="primary"):
-        # Logic to solve and update session_state.timetable, then set st.session_state.page = "dashboard"
-        st.rerun()
+    gen_col1, gen_col2, gen_col3 = st.columns([1, 1.6, 1])
+    with gen_col2:
+        if st.button("Generate Optimized Timetable", type="primary", use_container_width=True):
+            # Logic to solve and update session_state.timetable, then set st.session_state.page = "dashboard"
+            st.rerun()
 else:
     # ══════════════════════════════════════════════════════
     # EXECUTIVE ANALYTICS RENDERING
