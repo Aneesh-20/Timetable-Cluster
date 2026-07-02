@@ -140,6 +140,40 @@ def build_teacher_safe(idx, name, subjects, max_days, max_periods, exclusions):
     st.warning(f"Couldn't match Teacher(...) constructor for '{name}' — using a plain record instead. Update build_teacher_safe to match your Teacher model's real fields.")
     return {"id": f"T{idx+1}", "name": name, "subjects": subj_list, "max_days": max_days, "max_periods": max_periods, "exclusions": excl_list}
 
+def normalize_instructor_columns(raw_df):
+    """
+    Flexibly maps whatever header names are in the uploaded sheet onto the
+    5 canonical fields the app needs (Name, Subjects, Max Days, Max Periods,
+    Exclusions), regardless of spacing, casing, underscores, or minor wording
+    differences (e.g. 'MaxDays', 'max_periods', 'Exclusion', 'Subject').
+    Returns (renamed_df, missing_canonical_fields_list).
+    """
+    canonical_aliases = {
+        "Name": {"name", "instructor", "instructorname", "teacher", "teachername", "fullname"},
+        "Subjects": {"subjects", "subject", "subjectlist"},
+        "Max Days": {"maxdays", "maxday", "daysperweek", "maxdaysperweek", "days"},
+        "Max Periods": {"maxperiods", "maxperiod", "periodsperweek", "maxperiodsperweek", "periods"},
+        "Exclusions": {"exclusions", "exclusion", "excluded", "excludedslots", "unavailable"},
+    }
+
+    def normalize(s):
+        return "".join(ch for ch in str(s).strip().lower() if ch.isalnum())
+
+    col_lookup = {normalize(c): c for c in raw_df.columns}
+    rename_map = {}
+    found = set()
+
+    for canonical, aliases in canonical_aliases.items():
+        for alias in aliases:
+            if alias in col_lookup:
+                rename_map[col_lookup[alias]] = canonical
+                found.add(canonical)
+                break
+
+    renamed_df = raw_df.rename(columns=rename_map)
+    missing = set(canonical_aliases.keys()) - found
+    return renamed_df, missing
+
 # ══════════════════════════════════════════════════════════
 # APP INITIALIZATION & THEME
 # ══════════════════════════════════════════════════════════
@@ -500,7 +534,7 @@ if st.session_state.page == "home":
 
     # ── MODE 1: Excel / CSV upload ──────────────────────
     if st.session_state.input_mode == "excel":
-        st.caption("Expected columns: **Name, Subjects, Max Days, Max Periods, Exclusions** (Subjects/Exclusions comma-separated)")
+        st.caption("Needs a column for each of: **Name, Subjects, Max Days, Max Periods, Exclusions** — exact header names, spacing, and casing don't matter (e.g. 'MaxDays' or 'max_periods' both work).")
         uploaded_file = st.file_uploader("Upload instructor sheet", type=["xlsx", "xls", "csv"], label_visibility="collapsed")
 
         if uploaded_file is not None:
@@ -511,11 +545,10 @@ if st.session_state.page == "home":
                     raw_df = pd.read_excel(uploaded_file)
 
                 raw_df.columns = [str(c).strip() for c in raw_df.columns]
-                required_cols = {"Name", "Subjects", "Max Days", "Max Periods", "Exclusions"}
-                missing = required_cols - set(raw_df.columns)
+                raw_df, missing = normalize_instructor_columns(raw_df)
 
                 if missing:
-                    st.error(f"Missing column(s): {', '.join(sorted(missing))}. Please match the expected template.")
+                    st.error(f"Couldn't find a column for: {', '.join(sorted(missing))}. Rename that column to something recognizable (e.g. 'Max Days', 'MaxDays') and re-upload.")
                 else:
                     st.success(f"Loaded {len(raw_df)} instructor record(s).")
                     st.dataframe(raw_df, use_container_width=True, hide_index=True)
