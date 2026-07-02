@@ -191,30 +191,33 @@ D = st.session_state.dark_mode
 
 # ══════════════════════════════════════════════════════════
 # PREMIUM DESIGN TOKEN SYSTEM
-# Palette: instrument-panel obsidian + brass, not generic SaaS teal.
+# Palette: obsidian chalkboard + brand navy-teal, matching the SLOTRA logo.
 # Display face: Fraunces (serif, plaque-like gravitas)
 # UI face: Inter (dense-data legibility)
 # Numeric face: JetBrains Mono (precision-instrument readouts)
 # ══════════════════════════════════════════════════════════
 THEME = {
-    "bg": "#07090D" if D else "#F6F4EF",
-    "bg_grad_a": "#0A0D14" if D else "#FBFAF7",
-    "bg_grad_b": "#07090D" if D else "#F1EEE6",
-    "panel": "rgba(16, 20, 31, 0.72)" if D else "rgba(255, 255, 255, 0.86)",
-    "panel_solid": "#10141F" if D else "#FFFFFF",
-    "accent": "#C9A15A" if D else "#A7793B",
-    "accent_bright": "#E4C077" if D else "#C9A15A",
-    "accent_dim": "rgba(201,161,90,0.14)" if D else "rgba(167,121,59,0.10)",
-    "text": "#ECE9E2" if D else "#1A1712",
-    "text_dim": "#8B8D97" if D else "#6B6558",
-    "sub": "#63656F" if D else "#948C7C",
-    "border": "rgba(201,161,90,0.22)" if D else "rgba(167,121,59,0.24)",
-    "border_soft": "rgba(255,255,255,0.06)" if D else "rgba(26,23,18,0.08)",
+    "bg": "#07090C" if D else "#F4F7F8",
+    "bg_grad_a": "#0A1016" if D else "#FAFCFD",
+    "bg_grad_b": "#07090C" if D else "#EFF3F4",
+    "panel": "rgba(14, 20, 27, 0.72)" if D else "rgba(255, 255, 255, 0.86)",
+    "panel_solid": "#0E141B" if D else "#FFFFFF",
+    "accent": "#3FB6C4" if D else "#1E7A87",
+    "accent_bright": "#6FD8E3" if D else "#2FA8B8",
+    "accent_dim": "rgba(63,182,196,0.14)" if D else "rgba(30,122,135,0.10)",
+    "accent_navy": "#1B3A5C" if D else "#1B3A5C",
+    "text": "#EAEEF0" if D else "#12191D",
+    "text_dim": "#8A959C" if D else "#5C6B71",
+    "sub": "#5E6A72" if D else "#8A9498",
+    "border": "rgba(63,182,196,0.24)" if D else "rgba(30,122,135,0.24)",
+    "border_soft": "rgba(255,255,255,0.06)" if D else "rgba(18,25,29,0.08)",
     "grid": "rgba(255,255,255,0.03)" if D else "rgba(0,0,0,0.04)",
     "danger": "#E5675F",
     "success": "#5FBF8A",
     "warning": "#D9A84E",
 }
+
+BG_PATTERN_B64 = "PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0ODAiIGhlaWdodD0iNDgwIiB2aWV3Qm94PSIwIDAgNDgwIDQ4MCI+CiAgPGRlZnM+CiAgICA8cGF0dGVybiBpZD0iZ3JpZCIgd2lkdGg9IjgwIiBoZWlnaHQ9IjgwIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIj4KICAgICAgPHBhdGggZD0iTSA4MCAwIEwgMCAwIDAgODAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzJGQThCOCIgc3Ryb2tlLXdpZHRoPSIwLjYiIG9wYWNpdHk9IjAuMTAiLz4KICAgIDwvcGF0dGVybj4KICA8L2RlZnM+CiAgPHJlY3Qgd2lkdGg9IjQ4MCIgaGVpZ2h0PSI0ODAiIGZpbGw9InVybCgjZ3JpZCkiLz4KCiAgPCEtLSBjbG9jayAtLT4KICA8ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSg1Miw1NCkiIHN0cm9rZT0iIzVGQzJDRSIgc3Ryb2tlLXdpZHRoPSIxLjQiIGZpbGw9Im5vbmUiIG9wYWNpdHk9IjAuMTYiPgogICAgPGNpcmNsZSBjeD0iMCIgY3k9IjAiIHI9IjIyIi8+CiAgICA8bGluZSB4MT0iMCIgeTE9IjAiIHgyPSIwIiB5Mj0iLTEzIi8+CiAgICA8bGluZSB4MT0iMCIgeTE9IjAiIHgyPSI5IiB5Mj0iNCIvPgogIDwvZz4KCiAgPCEtLSBib29rIC0tPgogIDxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDQwMCw2MCkiIHN0cm9rZT0iIzVGQzJDRSIgc3Ryb2tlLXdpZHRoPSIxLjQiIGZpbGw9Im5vbmUiIG9wYWNpdHk9IjAuMTQiPgogICAgPHBhdGggZD0iTSAtMjAgLTEyIEwgMCAtMTYgTCAyMCAtMTIgTCAyMCAxMiBMIDAgMTYgTCAtMjAgMTIgWiIvPgogICAgPGxpbmUgeDE9IjAiIHkxPSItMTYiIHgyPSIwIiB5Mj0iMTYiLz4KICA8L2c+CgogIDwhLS0gZmxhc2sgLS0+CiAgPGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoNjAsMjYwKSIgc3Ryb2tlPSIjM0U4NkEwIiBzdHJva2Utd2lkdGg9IjEuNCIgZmlsbD0ibm9uZSIgb3BhY2l0eT0iMC4xNCI+CiAgICA8cGF0aCBkPSJNIC02IC0xOCBMIC02IC00IEwgLTE2IDE2IEwgMTYgMTYgTCA2IC00IEwgNiAtMTggWiIvPgogICAgPGxpbmUgeDE9Ii05IiB5MT0iLTE4IiB4Mj0iOSIgeTI9Ii0xOCIvPgogICAgPGxpbmUgeDE9Ii0xMSIgeTE9IjYiIHgyPSIxMSIgeTI9IjYiLz4KICA8L2c+CgogIDwhLS0gYXRvbSAtLT4KICA8ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSg0MTAsMjcwKSIgc3Ryb2tlPSIjNUZDMkNFIiBzdHJva2Utd2lkdGg9IjEuMiIgZmlsbD0ibm9uZSIgb3BhY2l0eT0iMC4xMyI+CiAgICA8ZWxsaXBzZSBjeD0iMCIgY3k9IjAiIHJ4PSIyMCIgcnk9IjgiLz4KICAgIDxlbGxpcHNlIGN4PSIwIiBjeT0iMCIgcng9IjIwIiByeT0iOCIgdHJhbnNmb3JtPSJyb3RhdGUoNjApIi8+CiAgICA8ZWxsaXBzZSBjeD0iMCIgY3k9IjAiIHJ4PSIyMCIgcnk9IjgiIHRyYW5zZm9ybT0icm90YXRlKDEyMCkiLz4KICAgIDxjaXJjbGUgY3g9IjAiIGN5PSIwIiByPSIyLjQiIGZpbGw9IiM1RkMyQ0UiIHN0cm9rZT0ibm9uZSIvPgogIDwvZz4KCiAgPCEtLSBjYWxlbmRhciAtLT4KICA8ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgyMzAsNDEwKSIgc3Ryb2tlPSIjM0U4NkEwIiBzdHJva2Utd2lkdGg9IjEuMyIgZmlsbD0ibm9uZSIgb3BhY2l0eT0iMC4xMyI+CiAgICA8cmVjdCB4PSItMTgiIHk9Ii0xNCIgd2lkdGg9IjM2IiBoZWlnaHQ9IjMwIiByeD0iMyIvPgogICAgPGxpbmUgeDE9Ii0xOCIgeTE9Ii00IiB4Mj0iMTgiIHkyPSItNCIvPgogICAgPGxpbmUgeDE9Ii05IiB5MT0iLTE4IiB4Mj0iLTkiIHkyPSItMTAiLz4KICAgIDxsaW5lIHgxPSI5IiB5MT0iLTE4IiB4Mj0iOSIgeTI9Ii0xMCIvPgogICAgPHJlY3QgeD0iLTQiIHk9IjIiIHdpZHRoPSI2IiBoZWlnaHQ9IjYiIGZpbGw9IiM1RkMyQ0UiIHN0cm9rZT0ibm9uZSIgb3BhY2l0eT0iMC41Ii8+CiAgPC9nPgoKICA8IS0tIHJ1bGVyIC8gcHJvdHJhY3RvciBoaW50IC0tPgogIDxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDI0MCwxNTApIiBzdHJva2U9IiMzRTg2QTAiIHN0cm9rZS13aWR0aD0iMS4xIiBmaWxsPSJub25lIiBvcGFjaXR5PSIwLjEwIj4KICAgIDxwYXRoIGQ9Ik0gLTIwIDEyIEEgMjAgMjAgMCAwIDEgMjAgMTIgWiIvPgogICAgPGxpbmUgeDE9IjAiIHkxPSIxMiIgeDI9IjAiIHkyPSItOCIvPgogIDwvZz4KCiAgPCEtLSBvcGVuIGJvb2sgLyBsaWJyYXJ5IGhpbnQgYm90dG9tLWxlZnQgLS0+CiAgPGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMTQwLDQzMCkiIHN0cm9rZT0iIzVGQzJDRSIgc3Ryb2tlLXdpZHRoPSIxLjIiIGZpbGw9Im5vbmUiIG9wYWNpdHk9IjAuMTEiPgogICAgPHBhdGggZD0iTSAtMTggLTYgUSAtMTggLTEyIC05IC0xMiBMIC05IDggUSAtMTggOCAtMTggMiBaIi8+CiAgICA8cGF0aCBkPSJNIDE4IC02IFEgMTggLTEyIDkgLTEyIEwgOSA4IFEgMTggOCAxOCAyIFoiLz4KICA8L2c+Cjwvc3ZnPg=="
 
 PLOTLY_FONT = "Inter, -apple-system, sans-serif"
 PLOTLY_MONO = "JetBrains Mono, monospace"
@@ -242,11 +245,11 @@ if not st.session_state.splash_done:
         .slotra-preloader-inner {{ position:relative; display:flex; flex-direction:column; align-items:center; gap:14px; }}
         .slotra-preloader-ring {{
             position:absolute; width:132px; height:132px; border-radius:50%;
-            border: 1px solid rgba(201,161,90,0.35);
-            border-top-color: #C9A15A;
+            border: 1px solid rgba(63,182,196,0.35);
+            border-top-color: #3FB6C4;
             animation: slotra-spin 1.4s linear infinite;
         }}
-        .slotra-preloader-logo {{ width:96px; border-radius:14px; box-shadow: 0 0 40px rgba(201,161,90,0.25); }}
+        .slotra-preloader-logo {{ width:96px; border-radius:14px; box-shadow: 0 0 40px rgba(63,182,196,0.25); }}
         .slotra-preloader-word {{
             font-family:'Fraunces', Georgia, serif; font-size:22px; font-weight:600;
             letter-spacing:0.28em; color:#ECE9E2; margin-top:4px;
@@ -263,7 +266,7 @@ if not st.session_state.splash_done:
     st.rerun()
 
 # ══════════════════════════════════════════════════════════
-# GLOBAL CSS STYLES — premium instrument-panel design system
+# GLOBAL CSS STYLES — premium chalkboard-panel design system
 # ══════════════════════════════════════════════════════════
 st.markdown(f"""
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -272,10 +275,31 @@ st.markdown(f"""
     html, body, [class*="css"] {{ font-family: 'Inter', -apple-system, sans-serif; }}
 
     .stApp {{
-        background: radial-gradient(ellipse 1200px 700px at 15% -10%, {THEME['bg_grad_a']} 0%, transparent 60%),
-                    radial-gradient(ellipse 1000px 800px at 100% 110%, {THEME['bg_grad_a']} 0%, transparent 55%),
+        background: radial-gradient(ellipse 1100px 650px at 12% -8%, rgba(63,182,196,0.07) 0%, transparent 55%),
+                    radial-gradient(ellipse 900px 700px at 100% 108%, rgba(27,58,92,0.16) 0%, transparent 55%),
                     {THEME['bg_grad_b']} !important;
         color: {THEME['text']} !important;
+    }}
+
+    /* Rounded obsidian bezel frame around the whole app, echoing the
+       chalkboard-panel reference (rounded outer edge + inset border) */
+    .main .block-container {{
+        border: 1px solid rgba(63,182,196,0.16);
+        border-radius: 28px;
+        background: linear-gradient(180deg, rgba(10,16,22,0.55) 0%, rgba(7,9,12,0.35) 100%);
+        box-shadow: 0 0 0 6px #07090C, 0 0 0 7px rgba(63,182,196,0.10), 0 30px 90px rgba(0,0,0,0.55);
+        padding: 2.4rem 2.8rem 2.8rem 2.8rem !important;
+        margin-top: 0.6rem;
+    }}
+
+    /* Chalkboard timetable-grid + academic-icon texture, in the brand's navy/teal tones */
+    .stApp::after {{
+        content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+        opacity: {"0.9" if D else "0.35"};
+        background-image: url("data:image/svg+xml;base64,{BG_PATTERN_B64}");
+        background-size: 480px 480px;
+        background-repeat: repeat;
+        mix-blend-mode: {"screen" if D else "multiply"};
     }}
 
     /* Subtle film-grain texture overlay for material depth */
@@ -311,7 +335,7 @@ st.markdown(f"""
     }}
     .brand-word {{
         font-family: 'Fraunces', Georgia, serif; font-size: 30px; font-weight: 700;
-        letter-spacing: 0.09em; background: linear-gradient(135deg, {THEME['accent_bright']} 0%, {THEME['accent']} 60%, #B8935A 100%);
+        letter-spacing: 0.09em; background: linear-gradient(135deg, {THEME['accent_bright']} 0%, {THEME['accent']} 60%, #1B3A5C 100%);
         -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
     }}
     .brand-tag {{
@@ -343,11 +367,11 @@ st.markdown(f"""
     .date-badge .dot {{ width:7px; height:7px; border-radius:50%; background:{THEME['success']}; box-shadow: 0 0 10px {THEME['success']}; animation: pulse-dot 1.8s infinite; }}
     @keyframes pulse-dot {{ 0%{{opacity:1}} 50%{{opacity:0.3}} 100%{{opacity:1}} }}
 
-    /* ── Buttons: mechanical, pressed, brass-accented ── */
+    /* ── Buttons: mechanical, pressed, teal-accented ── */
     .stButton>button {{
         border-radius: 10px !important;
         border: 1px solid {THEME['border']} !important;
-        background: linear-gradient(180deg, rgba(201,161,90,0.08) 0%, rgba(201,161,90,0.02) 100%) !important;
+        background: linear-gradient(180deg, rgba(63,182,196,0.08) 0%, rgba(63,182,196,0.02) 100%) !important;
         color: {THEME['text']} !important;
         font-weight: 600 !important; font-family: 'Inter', sans-serif !important;
         letter-spacing: 0.02em !important;
@@ -357,20 +381,20 @@ st.markdown(f"""
     }}
     .stButton>button:hover {{
         border-color: {THEME['accent']} !important; color: {THEME['accent_bright']} !important;
-        background: linear-gradient(180deg, rgba(201,161,90,0.16) 0%, rgba(201,161,90,0.05) 100%) !important;
+        background: linear-gradient(180deg, rgba(63,182,196,0.16) 0%, rgba(63,182,196,0.05) 100%) !important;
         transform: translateY(-1px) !important;
-        box-shadow: 0 6px 18px rgba(201,161,90,0.15), inset 0 1px 0 rgba(255,255,255,0.05) !important;
+        box-shadow: 0 6px 18px rgba(63,182,196,0.15), inset 0 1px 0 rgba(255,255,255,0.05) !important;
     }}
     .stButton>button:active {{ transform: translateY(0px) !important; box-shadow: 0 1px 4px rgba(0,0,0,0.2) !important; }}
     .stButton>button[kind="primary"] {{
         background: linear-gradient(180deg, {THEME['accent_bright']} 0%, {THEME['accent']} 100%) !important;
-        color: #14100A !important; border: 1px solid {THEME['accent_bright']} !important;
+        color: #06181C !important; border: 1px solid {THEME['accent_bright']} !important;
         font-weight: 700 !important;
-        box-shadow: 0 6px 22px rgba(201,161,90,0.28), inset 0 1px 0 rgba(255,255,255,0.25) !important;
+        box-shadow: 0 6px 22px rgba(63,182,196,0.28), inset 0 1px 0 rgba(255,255,255,0.25) !important;
     }}
     .stButton>button[kind="primary"]:hover {{
         filter: brightness(1.08) !important; transform: translateY(-1px) !important;
-        box-shadow: 0 10px 30px rgba(201,161,90,0.4), inset 0 1px 0 rgba(255,255,255,0.3) !important;
+        box-shadow: 0 10px 30px rgba(63,182,196,0.4), inset 0 1px 0 rgba(255,255,255,0.3) !important;
     }}
     div[data-testid="stHorizontalBlock"] .stButton>button {{ border-radius: 999px !important; padding: 6px 18px !important; }}
 
